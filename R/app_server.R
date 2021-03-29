@@ -38,6 +38,11 @@ app_server <- function(input, output, session) {
     genes = all_genes
   )
 
+  selected_hpo <- hpoSelectorServer(
+    id = "hpo_selector",
+    hpoterms = hpoterms
+  )
+
 
   params <- shiny::eventReactive(input$run_query, {
     validate(
@@ -50,8 +55,11 @@ app_server <- function(input, output, session) {
       uri = input$uri_vcf,
       geneid = selected_gene()$ensgene,
       regions = as.list(bed_regions),
-      filters = list(
+      variant_filters = list(
         coding_only = input$coding_only
+      ),
+      sample_filters = list(
+        hpoids = selected_hpo()
       )
     )
   })

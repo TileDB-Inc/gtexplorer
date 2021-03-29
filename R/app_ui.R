@@ -29,6 +29,10 @@ app_ui <- function(request) {
           geneSelectorUI("gene_selector"),
           # regionSelectorUI("region_selector"),
 
+          shiny::h4("Filter Samples"),
+          hpoSelectorUI("hpo_selector"),
+
+
           shiny::checkboxGroupInput(
             inputId = "modules",
             "Family Role",
