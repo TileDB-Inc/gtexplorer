@@ -1,7 +1,7 @@
 geneSelectorUI <- function(id) {
-  ns <- NS(id)
-  tagList(
-    selectizeInput(
+  ns <- shiny::NS(id)
+  shiny::tagList(
+    shiny::selectizeInput(
       inputId = ns("gene"),
       label = "Gene Symbol",
       choices = c(`Database not loaded...` = "")
@@ -12,16 +12,16 @@ geneSelectorUI <- function(id) {
 
 # param annotable: one of annotable's provided tibbles
 geneSelectorServer <- function(id, genes) {
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
 
-    observeEvent(genes(), {
-      req(genes())
+    shiny::observeEvent(genes(), {
+      shiny::req(genes())
       cat("\nUpdating possible symbols in search box...\n", file = stderr())
 
-      updateSelectizeInput(
+      shiny::updateSelectizeInput(
         session,
         inputId = "gene",
-        choices = setNames(genes()$entrez, genes()$symbol),
+        choices = stats::setNames(genes()$entrez, genes()$symbol),
         selected = c(Search = ""),
         server = TRUE,
         options = list(
@@ -31,9 +31,9 @@ geneSelectorServer <- function(id, genes) {
       )
     })
 
-    # return selected gene
-    reactive({
-      filter(genes(), entrez == input$gene)
+    # return row for selected gene
+    shiny::reactive({
+      genes()[genes()$entrez == input$gene,]
     })
 
   })

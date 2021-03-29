@@ -9,10 +9,8 @@ genomes <- c(
   grch38 = "hg38"
 )
 
-available_contigs <- genomes %>%
+supported_genomes <- genomes %>%
   map(~ GenomeInfoDb::Seqinfo(genome = .x)) %>%
   map(GenomeInfoDb::seqlengths)
 
-dir.create("data", showWarnings = FALSE)
-save(available_contigs, file = "data/available_contigs.rda", compress = "bzip2")
-
+usethis::use_data(supported_genomes, internal = TRUE)

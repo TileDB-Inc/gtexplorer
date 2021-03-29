@@ -1,0 +1,52 @@
+#' Application User-Interface
+#'
+#' @param request Internal parameter for `{shiny}`.
+#' @import shiny
+#' @noRd
+
+app_ui <- function(request) {
+  shiny::tagList(
+    shiny::fluidPage(
+
+      shiny::titlePanel("Quokka TileDB"),
+        shiny::wellPanel(
+          id = "setup",
+
+          shiny::textInput(
+            inputId = "uri_vcf",
+            label = "TileDB-VCF Dataset URI",
+            value = "tiledb://TileDB-Inc/vcf-1kg-phase3-data",
+            placeholder = "e.g., tiledb://TileDB-Inc/vcf-1kg-phase3-data"
+          ),
+
+          shiny::selectInput(
+            inputId = "genome",
+            label = "Genome Build",
+            choices = c("GRCh37", "GRCh38")
+          ),
+
+          geneSelectorUI("gene_selector"),
+          regionSelectorUI("region_selector"),
+
+          shiny::checkboxGroupInput(
+            inputId = "modules",
+            "Family Role",
+            c(
+              "Proband",
+              "Sibling",
+              "Mother",
+              "Other",
+              "Father",
+              "Unknown"
+            ),
+            inline = TRUE
+          ),
+
+          shiny::actionButton("run_query", "Search")
+        ),
+
+
+        shiny::verbatimTextOutput("params")
+    )
+  )
+}
