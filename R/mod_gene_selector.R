@@ -21,7 +21,7 @@ geneSelectorServer <- function(id, genes) {
       shiny::updateSelectizeInput(
         session,
         inputId = "gene",
-        choices = stats::setNames(genes()$entrez, genes()$symbol),
+        choices = stats::setNames(genes()$ensgene, genes()$symbol),
         selected = c(Search = ""),
         server = TRUE,
         options = list(
@@ -33,7 +33,7 @@ geneSelectorServer <- function(id, genes) {
 
     # return row for selected gene
     shiny::reactive({
-      genes()[genes()$entrez == input$gene,]
+      genes()[genes()$ensgene == input$gene,]
     })
 
   })
