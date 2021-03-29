@@ -19,7 +19,7 @@ fluidPage(
       ),
 
       geneSelectorUI("gene_selector"),
-      regionSelectorUI("gene_selector"),
+      regionSelectorUI("region_selector"),
 
       checkboxGroupInput(
         inputId = "modules",

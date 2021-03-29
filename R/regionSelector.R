@@ -12,25 +12,29 @@ regionSelectorUI <- function(id) {
 
 
 # param contigs: vector of named chromosome lengths
-regionSelector <- function(input, output, session, contigs) {
+regionSelectorServer <- function(id, contigs) {
+  moduleServer(id, function(input, output, session) {
 
-  observeEvent(contigs(), {
-    req(contigs())
-    cat("\n\nUpdating contigs in search box...\n", file = stderr())
-    updateSelectizeInput(
-      session,
-      inputId = "contig",
-      choices = names(contigs()),
-      selected = c(Search = ""),
-      server = TRUE,
-      options = list(
-        placeholder = "Enter chromosome",
-        openOnFocus = FALSE
+    observeEvent(contigs(), {
+      req(contigs())
+      cat("\n\nUpdating contigs in search box...\n", file = stderr())
+
+      updateSelectizeInput(
+        session,
+        inputId = "contig",
+        choices = names(contigs()),
+        selected = c(Search = ""),
+        server = TRUE,
+        options = list(
+          placeholder = "Enter chromosome",
+          openOnFocus = FALSE
+        )
       )
-    )
-  })
+    })
 
-  reactive({
-    input$contig
+    reactive({
+      contigs()[input$contig]
+    })
+
   })
 }

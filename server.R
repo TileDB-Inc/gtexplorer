@@ -10,28 +10,27 @@ library(jsonlite)
 function(input, output, session) {
 
   all_contigs <- reactive({
+    message("Retrieving contigs for genome build")
     available_contigs[[tolower(input$genome)]]
   })
 
-  regions <- callModule(
-    regionSelector,
-    "region_selector",
+  selected_contig <- regionSelectorServer(
+    id = "region_selector",
     contigs = all_contigs
   )
 
   # load appropriate annotables table
   all_genes <- reactive({
+    message("Retrieving genes for genome build")
     get(tolower(input$genome)) %>%
       # TODO: better handling of duplicate ensembl IDs and symbols
       distinct(.keep_all = TRUE)
   })
 
-  genes <- callModule(
-    geneSelector,
-    "gene_selector",
+  selected_gene <- geneSelectorServer(
+    id = "gene_selector",
     genes = all_genes
   )
-
 
   # callModule(
   #   genePlot,
@@ -44,13 +43,13 @@ function(input, output, session) {
 
 
   params <- eventReactive(input$run_query, {
-      bed_regions <- glue::glue_data(genes(), "{chr}:{start}-{end}")
+      bed_regions <- glue::glue_data(selected_gene(), "{chr}:{start}-{end}")
 
       params <- list(
         uri = input$uri_vcf,
-        geneid = genes()$ensgene,
+        geneid = selected_gene()$ensgene,
         regions = as.list(bed_regions),
-        contigs = regions()
+        contig = selected_contig()
       )
     }
   )
