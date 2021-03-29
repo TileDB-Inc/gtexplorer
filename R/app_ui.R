@@ -27,7 +27,7 @@ app_ui <- function(request) {
           ),
 
           geneSelectorUI("gene_selector"),
-          regionSelectorUI("region_selector"),
+          # regionSelectorUI("region_selector"),
 
           shiny::checkboxGroupInput(
             inputId = "modules",

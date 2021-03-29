@@ -14,10 +14,10 @@ app_server <- function(input, output, session) {
     supported_genomes[[tolower(input$genome)]]
   })
 
-  selected_contig <- regionSelectorServer(
-    id = "region_selector",
-    contigs = all_contigs
-  )
+  # selected_contig <- regionSelectorServer(
+  #   id = "region_selector",
+  #   contigs = all_contigs
+  # )
 
   # load appropriate annotables table
   all_genes <- shiny::reactive({
@@ -45,8 +45,7 @@ app_server <- function(input, output, session) {
       params <- list(
         uri = input$uri_vcf,
         geneid = selected_gene()$ensgene,
-        regions = as.list(bed_regions),
-        contig = selected_contig()
+        regions = as.list(bed_regions)
       )
     }
   )
