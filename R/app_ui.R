@@ -40,7 +40,14 @@ app_ui <- function(request) {
               "Father",
               "Unknown"
             ),
-            inline = TRUE
+            inline = FALSE
+          ),
+
+          shiny::h4("Filters"),
+          shiny::checkboxInput(
+            inputId = "coding_only",
+            label = "Restrict to coding changes",
+            value = FALSE
           ),
 
           shiny::actionButton("run_query", "Search")

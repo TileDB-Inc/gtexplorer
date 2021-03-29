@@ -45,7 +45,10 @@ app_server <- function(input, output, session) {
       params <- list(
         uri = input$uri_vcf,
         geneid = selected_gene()$ensgene,
-        regions = as.list(bed_regions)
+        regions = as.list(bed_regions),
+        filters = list(
+          coding_only = input$coding_only
+        )
       )
     }
   )
