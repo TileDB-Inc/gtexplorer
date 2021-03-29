@@ -6,10 +6,11 @@
 
 app_ui <- function(request) {
   shiny::tagList(
+
     shiny::fluidPage(
 
       shiny::titlePanel("Quokka TileDB"),
-        shiny::wellPanel(
+        shiny::sidebarPanel(
           id = "setup",
 
           shiny::textInput(

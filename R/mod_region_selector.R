@@ -6,6 +6,10 @@ regionSelectorUI <- function(id) {
       inputId = ns("contig"),
       label = "Chromosome",
       choices = c(`Database not loaded...` = "")
+    ),
+    splitLayout(
+      textInput("region_start", "Start", placeholder = "Region start"),
+      textInput("region_end", "End", placeholder = "Region end")
     )
   )
 }
