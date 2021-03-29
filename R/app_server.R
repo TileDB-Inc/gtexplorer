@@ -40,7 +40,9 @@ app_server <- function(input, output, session) {
 
 
   params <- shiny::eventReactive(input$run_query, {
-
+    validate(
+      need(nrow(selected_gene()) > 0, message = "Must select a gene to run the query.")
+    )
 
     bed_regions <- glue::glue_data(selected_gene(), "{chr}:{start}-{end}")
 
