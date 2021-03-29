@@ -40,18 +40,19 @@ app_server <- function(input, output, session) {
 
 
   params <- shiny::eventReactive(input$run_query, {
-      bed_regions <- glue::glue_data(selected_gene(), "{chr}:{start}-{end}")
 
-      params <- list(
-        uri = input$uri_vcf,
-        geneid = selected_gene()$ensgene,
-        regions = as.list(bed_regions),
-        filters = list(
-          coding_only = input$coding_only
-        )
+
+    bed_regions <- glue::glue_data(selected_gene(), "{chr}:{start}-{end}")
+
+    params <- list(
+      uri = input$uri_vcf,
+      geneid = selected_gene()$ensgene,
+      regions = as.list(bed_regions),
+      filters = list(
+        coding_only = input$coding_only
       )
-    }
-  )
+    )
+  })
 
   output$params <- shiny::renderText({
     jsonlite::toJSON(params(), auto_unbox = TRUE, pretty = TRUE)
