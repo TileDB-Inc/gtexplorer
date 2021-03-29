@@ -4,6 +4,7 @@ geneSelectorUI <- function(id) {
     shiny::selectizeInput(
       inputId = ns("gene"),
       label = "Gene Symbol",
+      multiple = TRUE,
       choices = c(`Database not loaded...` = "")
     )
   )
