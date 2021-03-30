@@ -20,7 +20,11 @@ Imports:
     jsonlite,
     annotables,
     glue,
-    utils
+    utils,
+    pkgload,
+    R6,
+    crul,
+    fauxpas
 Remotes:
   stephenturner/annotables
 Depends: 
