@@ -82,17 +82,11 @@ app_server <- function(input, output, session) {
     message("Submitting UDF to TileDB Cloud")
     cli <- TileDBClient$new()
 
-    resp <- try(
-      cli$submit_udf(
-        namespace = "aaronwolen",
-        name = "aaronwolen/quokka3_read_gene_partition",
-        args = udf_params
-      ),
-      silent = TRUE
+    cli$submit_udf(
+      namespace = "aaronwolen",
+      name = "aaronwolen/quokka3_read_gene_partition",
+      args = udf_params
     )
-
-    if (inherits(resp, "try-error")) browser()
-    return(resp)
   })
 
   output$table_results <- DT::renderDataTable({
