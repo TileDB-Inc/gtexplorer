@@ -3,3 +3,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.vscode$
+
+# deploy
+^app\.R$
+^rsconnect$
