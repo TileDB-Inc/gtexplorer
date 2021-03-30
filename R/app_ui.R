@@ -57,7 +57,9 @@ app_ui <- function(request) {
       ),
 
       shiny::mainPanel(
-        DT::dataTableOutput("table_results")
+        shinycssloaders::withSpinner(
+          DT::dataTableOutput("table_results")
+        )
       )
     )
   )
