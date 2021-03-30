@@ -100,6 +100,10 @@ app_server <- function(input, output, session) {
       simplifyMatrix = FALSE
     )
 
-    tibble::as_tibble(out)
+    DT::datatable(
+      data = tibble::as_tibble(out),
+      style = "bootstrap",
+      selection = "single"
+    )
   })
 }
