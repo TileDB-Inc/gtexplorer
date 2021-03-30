@@ -15,8 +15,8 @@ app_ui <- function(request) {
         shiny::textInput(
           inputId = "uri_vcf",
           label = "TileDB-VCF Dataset URI",
-          value = "tiledb://TileDB-Inc/vcf-1kg-phase3-data",
-          placeholder = "e.g., tiledb://TileDB-Inc/vcf-1kg-phase3-data"
+          value = "tiledb://TileDB-Inc/vcf-1kg-phase3",
+          placeholder = "e.g., tiledb://TileDB-Inc/vcf-1kg-phase3"
         ),
 
         shiny::selectInput(
