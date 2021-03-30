@@ -57,6 +57,15 @@ app_server <- function(input, output, session) {
     # assemble UDF parameters
     udf_params <- list(
       uri = input$uri_vcf,
+      attrs = list(
+        "sample_name",
+        "contig",
+        "pos_start",
+        "pos_end",
+        "fmt_GT",
+        "query_bed_start",
+        "query_bed_end"
+      ),
       # geneid = selected_gene()$ensgene,
       regions = as.list(bed_regions),
       # variant_filters = list(
@@ -72,11 +81,18 @@ app_server <- function(input, output, session) {
 
     message("Submitting UDF to TileDB Cloud")
     cli <- TileDBClient$new()
-    cli$submit_udf(
-      namespace = "aaronwolen",
-      name = "aaronwolen/quokka3_read_gene_partition",
-      args = udf_params
+
+    resp <- try(
+      cli$submit_udf(
+        namespace = "aaronwolen",
+        name = "aaronwolen/quokka3_read_gene_partition",
+        args = udf_params
+      ),
+      silent = TRUE
     )
+
+    if (inherits(resp, "try-error")) browser()
+    return(resp)
   })
 
   output$table_results <- DT::renderDataTable({
