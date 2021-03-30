@@ -24,7 +24,8 @@ Imports:
     pkgload,
     R6,
     crul,
-    fauxpas
+    fauxpas,
+    DT
 Remotes:
   stephenturner/annotables
 Depends: 

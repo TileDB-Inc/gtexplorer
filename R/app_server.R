@@ -44,27 +44,52 @@ app_server <- function(input, output, session) {
   )
 
 
-  params <- shiny::eventReactive(input$run_query, {
+  results <- shiny::eventReactive(input$run_query, {
     validate(
-      need(nrow(selected_gene()) > 0, message = "Must select a gene to run the query.")
+      need(
+        nrow(selected_gene()) > 0,
+        message = "Must select a gene to run the query."
+      )
     )
 
     bed_regions <- glue::glue_data(selected_gene(), "{chr}:{start}-{end}")
 
-    params <- list(
+    # assemble UDF parameters
+    udf_params <- list(
       uri = input$uri_vcf,
-      geneid = selected_gene()$ensgene,
+      # geneid = selected_gene()$ensgene,
       regions = as.list(bed_regions),
-      variant_filters = list(
-        coding_only = input$coding_only
-      ),
-      sample_filters = list(
-        hpoids = selected_hpo()
-      )
+      # variant_filters = list(
+      #   coding_only = input$coding_only
+      # ),
+      # sample_filters = list(
+      #   hpoids = selected_hpo()
+      # ),
+      samples = list("HG00097"),
+      region_partition = c(0L, 1L),
+      memory_budget_mb = 1024L
+    )
+
+    message("Submitting UDF to TileDB Cloud")
+    cli <- TileDBClient$new()
+    cli$submit_udf(
+      namespace = "aaronwolen",
+      name = "aaronwolen/quokka3_read_gene_partition",
+      args = udf_params
     )
   })
 
-  output$params <- shiny::renderText({
-    jsonlite::toJSON(params(), auto_unbox = TRUE, pretty = TRUE)
+  output$table_results <- DT::renderDataTable({
+    req(results())
+    message("Converting results to a table")
+
+    # convert to a data frame
+    out <- jsonlite::fromJSON(
+      results(),
+      simplifyDataFrame = TRUE,
+      simplifyMatrix = FALSE
+    )
+
+    tibble::as_tibble(out)
   })
 }
