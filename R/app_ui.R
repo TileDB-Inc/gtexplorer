@@ -30,21 +30,7 @@ app_ui <- function(request) {
 
         shiny::h4("Filter Samples"),
         hpoSelectorUI("hpo_selector"),
-
-
-        shiny::checkboxGroupInput(
-          inputId = "modules",
-          "Family Role",
-          c(
-            "Proband",
-            "Sibling",
-            "Mother",
-            "Other",
-            "Father",
-            "Unknown"
-          ),
-          inline = FALSE
-        ),
+        sampleFilterUI("sample_filter"),
 
         shiny::h4("Filters"),
         shiny::checkboxInput(
