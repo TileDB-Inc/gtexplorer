@@ -7,8 +7,10 @@
 app_ui <- function(request) {
   shiny::tagList(
     shiny::navbarPage(
-      theme = bslib::bs_theme(primary = "#001f75",
-                              version = 4),
+      theme = bslib::bs_theme(
+        primary = "#001f75",
+        version = 3
+      ),
       title = "Quokka TileDB",
       shiny::tabPanel(
         "Home",
