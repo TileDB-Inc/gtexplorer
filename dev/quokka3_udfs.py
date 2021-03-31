@@ -11,6 +11,7 @@ def vcf_annotation_example(
     import tiledb.cloud
     import tiledbvcf
     import os
+    import json
     from tiledb.cloud.compute import Delayed, DelayedSQL
 
     tiledb.cloud.login(
@@ -237,7 +238,5 @@ def vcf_annotation_example(
         delayed_samples, delayed_ensembl, delayed_veps
     )
 
-    # return "DOME"
-    #     return delayed_regions.compute()
     results = delayed_results.compute()
-    return results
+    return json.dumps(results.to_pydict())
