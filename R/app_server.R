@@ -63,6 +63,7 @@ app_server <- function(input, output, session) {
         "query_bed_end"
       ),
       pop = input$`sample_filter-population`,
+      gender = input$`sample_filter-gender`,
       # regions = as.list(bed_regions),
       # variant_filters = list(
       #   coding_only = input$coding_only

@@ -14,7 +14,7 @@ sampleFilterUI <- function(id) {
       inputId = ns("population"),
       label = "Population",
       multiple = FALSE,
-      choices = sample_metadata$pop
+      choices = c("all", sample_metadata$pop)
     )
 
   )

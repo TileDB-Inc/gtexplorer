@@ -5,7 +5,8 @@ def vcf_annotation_example(
     attrs=None,
     memory_budget=512,
     vcf_parallelization=1,
-    pop=None,
+    pop="all",
+    gender="all"
 ):
     import tiledb
     import tiledb.cloud
@@ -39,13 +40,12 @@ def vcf_annotation_example(
             "query_bed_end",
         ]
 
-    # Sample query
+    # Sample metadata query
     sample_query = (
         "select sampleuid from `tiledb://TileDB-Inc/vcf-1kg_sample_phenotype`"
     )
-    if pop is not None:
-        sample_query += f" WHERE pop = '{pop}'"
-
+    
+    # HPO term query
     hpo_query = """SELECT
         samplehpopair.sampleuid,
         samplehpopair.hpoid,
@@ -55,8 +55,17 @@ def vcf_annotation_example(
         LEFT JOIN `tiledb://TileDB-Inc/hpoterms` hpoterms ON hpoterms.hpoid = samplehpopair.hpoid
         WHERE hpoterms.hpodef != 'NA'
         """
-    if pop is not None:
+
+    if pop != "all" and gender == "all":
+        sample_query += f" WHERE pop = '{pop}'"
         hpo_query += f" AND pop = '{pop}'"
+    elif pop == "all" and gender != "all":
+        sample_query += f" WHERE gender = '{gender}'"
+        hpo_query += f" AND gender = '{gender}'"
+    elif pop != "all" and gender != "all":
+        sample_query += f" WHERE pop = '{pop}' AND gender = '{gender}'"
+        hpo_query += f" AND pop = '{pop}' AND gender = '{gender}'"
+
 
     ensembl_query = """SELECT
                       ensemblexon.chrom chrom,
