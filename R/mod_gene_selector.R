@@ -34,7 +34,15 @@ geneSelectorServer <- function(id, genes) {
 
     # return row for selected gene
     shiny::reactive({
-      genes()[genes()$ensgene == input$gene,]
+      shiny::validate(
+        shiny::need(input$gene, "Must select a gene to run the query.")
+      )
+
+      out <- genes()[genes()$symbol == input$gene,]
+      message(
+        glue::glue("Selected {input$gene} with {nrow(out)} associated Ensembl IDs")
+      )
+      out
     })
 
   })

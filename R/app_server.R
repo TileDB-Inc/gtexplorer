@@ -45,19 +45,13 @@ app_server <- function(input, output, session) {
 
 
   results <- shiny::eventReactive(input$run_query, {
-    # validate(
-    #   need(
-    #     nrow(selected_gene()) > 0,
-    #     message = "Must select a gene to run the query."
-    #   )
-    # )
 
     # bed_regions <- glue::glue_data(selected_gene(), "{chr}:{start}-{end}")
 
     # assemble UDF parameters
     udf_params <- list(
       array_uri = input$uri_vcf,
-      gene_name = input$`gene_selector-gene`,
+      gene_name = selected_gene()$symbol[1],
       # consequence = "missense_variant",
       attrs = list(
         "sample_name",
