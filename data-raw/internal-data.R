@@ -4,7 +4,7 @@ library(GenomeInfoDb)
 library(tiledb)
 library(usethis)
 library(purrr)
-
+library(stringr)
 
 # Genome Chromosomes ------------------------------------------------------
 # Create tables with chromosome lengths for each supported genome version
@@ -73,12 +73,30 @@ tbl_hpoterms <- subset(
 hpo_terms <- setNames(tbl_hpoterms$hpoid, tbl_hpoterms$hponame)
 
 
+# VEP Consequences --------------------------------------------------------
+# vep_array <- tiledb::tiledb_array(
+#   uri = "s3://genomic-datasets/biological-databases/data/tables/vepvariantannotation",
+#   as.data.frame = TRUE,
+#   is.sparse = TRUE,
+#   attrs = "consequence"
+# )
+
+# tbl_veps <- vep_array[]
+
+tbl_veps <- readr::read_csv(
+  "/Users/aaronwolen/Documents/tiledb/projects/biological-databases/data/tables/public.vepvariantannotation.csv.gz"
+)
+
+vep_consequences <- str_subset(unique(tbl_veps$consequence), fixed("&"), negate = TRUE)
+
+
 # export ------------------------------------------------------------------
 
 usethis::use_data(
   hpo_terms,
   sample_metadata,
   supported_genomes,
+  vep_consequences,
   internal = TRUE,
   overwrite = TRUE
 )
