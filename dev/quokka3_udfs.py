@@ -81,6 +81,12 @@ def vcf_annotation_example(
         sample_query += f" WHERE pop = '{pop}' AND gender = '{gender}'"
         hpo_query += f" AND pop = '{pop}' AND gender = '{gender}'"
 
+    if hponame is not None:
+      if isinstance(hponame, str):
+        hpo_query += f" AND hpoterms.hponame = '{hponame}'"
+      else:
+        hpo_query +=  "AND hpoterms.hponame IN (" + ','.join(f'"{i}"' for i in hponame) + ")"
+        
 
     ensembl_query = """SELECT
                       ensemblexon.chrom chrom,

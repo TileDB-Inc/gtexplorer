@@ -4,7 +4,15 @@ hpoSelectorUI <- function(id) {
     shiny::selectizeInput(
       inputId = ns("hpo"),
       label = "HPO Term",
-      choices = c(`Database not loaded...` = "")
+      choices = c(`Database not loaded...` = ""),
+      multiple = TRUE,
+      options = list(
+        placeholder = "Enter HPO Term",
+        maxItems = 3,
+        plugins = list(
+          "remove_button"
+        )
+      )
     )
   )
 }
@@ -19,13 +27,8 @@ hpoSelectorServer <- function(id, hpo_terms) {
     shiny::updateSelectizeInput(
       session,
       inputId = "hpo",
-      choices = hpo_terms,
-      selected = c(Search = ""),
-      server = TRUE,
-      options = list(
-        placeholder = "Enter HPO Term",
-        openOnFocus = FALSE
-      )
+      choices = names(hpo_terms),
+      server = TRUE
     )
 
     shiny::reactive({

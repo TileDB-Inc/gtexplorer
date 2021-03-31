@@ -73,8 +73,10 @@ app_server <- function(input, output, session) {
       # ),
       # region_partition = c(0L, 1L),
       vcf_parallelization = 10,
-      memory_budget = 512L
+      memory_budget = 512L,
+      hponame = selected_hpo()
     )
+
 
     message("Submitting UDF to TileDB Cloud")
     cli <- TileDBClient$new()
