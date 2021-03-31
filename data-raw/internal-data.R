@@ -32,8 +32,7 @@ tbl_samples <- samples_array[]
 
 sample_metadata <- subset(
   tbl_samples,
-  select =
-  -c(`__tiledb_rows`, sampleuid)
+  select = -c(`__tiledb_rows`, sampleuid)
 )
 
 sample_metadata <- lapply(sample_metadata, unique)
@@ -53,11 +52,23 @@ hpoterms_array <- tiledb::tiledb_array(
 tbl_hpoterms <- hpoterms_array[]
 
 
-# filter
+samplehpopair_array <- tiledb::tiledb_array(
+  uri = "s3://genomic-datasets/biological-databases/data/tables/samplehpopair",
+  as.data.frame = TRUE,
+  is.sparse = FALSE
+)
+
+tbl_samplehpopair <- samplehpopair_array[]
+
+
+# filter for terms actually assigned to samples
 stopifnot(anyDuplicated(tbl_hpoterms$hponame) == 0)
 stopifnot(anyDuplicated(tbl_hpoterms$hpoid) == 0)
 
-tbl_hpoterms <- subset(tbl_hpoterms, hponame != "All")
+tbl_hpoterms <- subset(
+  tbl_hpoterms,
+  hponame != "All" & hpoid %in% unique(tbl_samplehpopair$hpoid)
+)
 
 hpo_terms <- setNames(tbl_hpoterms$hpoid, tbl_hpoterms$hponame)
 
