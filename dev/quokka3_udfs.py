@@ -19,6 +19,20 @@ def vcf_annotation_example(
         host=os.environ["TILEDB_REST_SERVER_ADDRESS"],
         token=os.environ["TILEDB_REST_TOKEN"],
     )
+    
+
+    print(
+      "Parameters:\n"
+      f"...gene_name={gene_name}\n"
+      f"...array_uri={array_uri}\n"
+      f"...consequence={consequence}\n"
+      f"...attrs={attrs}\n"
+      f"...memory_budget={memory_budget}\n"
+      f"...vcf_parallelization={vcf_parallelization}\n"
+      f"...pop={pop}\n"
+      f"...gender={gender}\n"
+      f"...hponame={hponame}\n"
+    )
 
     # For this demo we will look at the BRCA2 gene
     # gene_name = 'KCNQ2'
