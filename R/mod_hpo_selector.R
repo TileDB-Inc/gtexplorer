@@ -11,7 +11,7 @@ hpoSelectorUI <- function(id) {
 
 
 # param annotable: one of annotable's provided tibbles
-hpoSelectorServer <- function(id, hpoterms) {
+hpoSelectorServer <- function(id, hpo_terms) {
   shiny::moduleServer(id, function(input, output, session) {
 
     cat("\nUpdating HPO terms in search box...\n", file = stderr())
@@ -19,7 +19,7 @@ hpoSelectorServer <- function(id, hpoterms) {
     shiny::updateSelectizeInput(
       session,
       inputId = "hpo",
-      choices = hpoterms,
+      choices = hpo_terms,
       selected = c(Search = ""),
       server = TRUE,
       options = list(

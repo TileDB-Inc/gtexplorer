@@ -40,7 +40,7 @@ app_server <- function(input, output, session) {
 
   selected_hpo <- hpoSelectorServer(
     id = "hpo_selector",
-    hpoterms = hpoterms
+    hpo_terms = hpo_terms
   )
 
 
