@@ -1,6 +1,7 @@
 # rsconnect::deployApp(
 #   appName = "quokka3",
 #   appFiles = c(
+#     ".Renviron",
 #     "app.R",
 #     "DESCRIPTION",
 #     "LICENSE",
