@@ -3,18 +3,18 @@ sampleFilterUI <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
 
-    shiny::selectInput(
+    shiny::selectizeInput(
       inputId = ns("gender"),
       label = "Gender",
       multiple = FALSE,
-      choices = c("all", sample_metadata$gender)
+      choices = c("Any", sample_metadata$gender)
     ),
 
-    shiny::selectInput(
+    shiny::selectizeInput(
       inputId = ns("population"),
       label = "Population",
       multiple = FALSE,
-      choices = c("all", sample_metadata$pop)
+      choices = c("Any", sample_metadata$pop)
     )
 
   )

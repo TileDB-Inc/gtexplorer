@@ -5,8 +5,9 @@ def vcf_annotation_example(
     attrs=None,
     memory_budget=512,
     vcf_parallelization=1,
-    pop="all",
-    gender="all"
+    pop="Any",
+    gender="Any",
+    hponame=None
 ):
     import tiledb
     import tiledb.cloud
@@ -56,13 +57,13 @@ def vcf_annotation_example(
         WHERE hpoterms.hponame != 'NA'
         """
 
-    if pop != "all" and gender == "all":
+    if pop != "Any" and gender == "Any":
         sample_query += f" WHERE pop = '{pop}'"
         hpo_query += f" AND pop = '{pop}'"
-    elif pop == "all" and gender != "all":
+    elif pop == "Any" and gender != "Any":
         sample_query += f" WHERE gender = '{gender}'"
         hpo_query += f" AND gender = '{gender}'"
-    elif pop != "all" and gender != "all":
+    elif pop != "Any" and gender != "Any":
         sample_query += f" WHERE pop = '{pop}' AND gender = '{gender}'"
         hpo_query += f" AND pop = '{pop}' AND gender = '{gender}'"
 
