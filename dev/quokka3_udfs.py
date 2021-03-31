@@ -95,7 +95,7 @@ def vcf_annotation_example(
                       ensemblgene.gene_id,
                       ensemblgene.gene_name,
                       ensemblgene.strand,
-                      ensemblexon.exon_id,
+                      ensemblexon.transcript_id,
                       ensemblexon.exon_number
                     FROM `tiledb://TileDB-Inc/ensemblgene_sparse` ensemblgene
                     LEFT JOIN `tiledb://TileDB-Inc/ensemblexon_sparse` ensemblexon ON ensemblexon.gene_id = ensemblgene.gene_id
@@ -107,14 +107,11 @@ def vcf_annotation_example(
     vep_query = """SELECT vepvariantannotation.chrom,
       vepvariantannotation.pos_start,
       vepvariantannotation.pos_end,
+      vepvariantannotation.ref,
+      vepvariantannotation.alt,
       vepvariantannotation.consequence,
       vepvariantannotation.codons,
-      vepvariantannotation.aminoacids,
-      vepvariantannotation.sift,
-      vepvariantannotation.startpos_cds,
-      vepvariantannotation.stoppos_cds,
-      vepvariantannotation.startpos_protein,
-      vepvariantannotation.stoppos_protein
+      vepvariantannotation.aminoacids
     FROM `tiledb://TileDB-Inc/vepvariantannotation` vepvariantannotation
     WHERE gene_id = (
         select gene_id
