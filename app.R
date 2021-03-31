@@ -9,7 +9,6 @@
 #     "man",
 #     "NAMESPACE",
 #     "R",
-#     "rsconnect",
 #     "shiny-quokka.Rproj"
 #   )
 # )
