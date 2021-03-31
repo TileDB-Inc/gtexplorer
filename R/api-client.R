@@ -87,7 +87,7 @@ TileDBClient <- R6::R6Class(
 
       if (!is.null(args)) {
         stopifnot(is.list(args))
-        body$argument <- jsonlite::toJSON(args, auto_unbox = TRUE)
+        body$argument <- jsonlite::toJSON(args, auto_unbox = TRUE, null = "null")
       }
 
       private$request(
