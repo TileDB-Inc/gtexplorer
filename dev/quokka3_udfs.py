@@ -49,11 +49,11 @@ def vcf_annotation_example(
     hpo_query = """SELECT
         samplehpopair.sampleuid,
         samplehpopair.hpoid,
-        hpoterms.hpodef
+        hpoterms.hponame
         FROM `tiledb://TileDB-Inc/vcf-1kg_sample_phenotype` 1kg_sample_phenotype
         LEFT JOIN `tiledb://TileDB-Inc/samplehpopair` samplehpopair ON samplehpopair.sampleuid = 1kg_sample_phenotype.sampleuid
         LEFT JOIN `tiledb://TileDB-Inc/hpoterms` hpoterms ON hpoterms.hpoid = samplehpopair.hpoid
-        WHERE hpoterms.hpodef != 'NA'
+        WHERE hpoterms.hponame != 'NA'
         """
 
     if pop != "all" and gender == "all":
