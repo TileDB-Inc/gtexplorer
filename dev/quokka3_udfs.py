@@ -273,4 +273,4 @@ def vcf_annotation_example(
     )
 
     results = delayed_results.compute()
-    return results.to_json()
+    return results.to_json(orient = "table", index = False)

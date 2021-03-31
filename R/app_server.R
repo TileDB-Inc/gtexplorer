@@ -58,7 +58,7 @@ app_server <- function(input, output, session) {
         "contig",
         "pos_start",
         "pos_end",
-        "fmt_GT",
+        # "fmt_GT",
         "query_bed_start",
         "query_bed_end"
       ),
@@ -92,15 +92,8 @@ app_server <- function(input, output, session) {
     req(results())
     message("Converting results to a table")
 
-    # convert to a data frame
-    out <- jsonlite::fromJSON(
-      results(),
-      simplifyDataFrame = TRUE,
-      simplifyMatrix = FALSE
-    )
-
     DT::datatable(
-      data = tibble::as_tibble(out),
+      data = jsonlite::fromJSON(results())$data,
       style = "bootstrap",
       selection = "single"
     )
