@@ -22,7 +22,7 @@ geneSelectorServer <- function(id, genes) {
       shiny::updateSelectizeInput(
         session,
         inputId = "gene",
-        choices = stats::setNames(genes()$ensgene, genes()$symbol),
+        choices = genes()$symbol,
         selected = c(Search = ""),
         server = TRUE,
         options = list(

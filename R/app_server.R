@@ -45,18 +45,20 @@ app_server <- function(input, output, session) {
 
 
   results <- shiny::eventReactive(input$run_query, {
-    validate(
-      need(
-        nrow(selected_gene()) > 0,
-        message = "Must select a gene to run the query."
-      )
-    )
+    # validate(
+    #   need(
+    #     nrow(selected_gene()) > 0,
+    #     message = "Must select a gene to run the query."
+    #   )
+    # )
 
-    bed_regions <- glue::glue_data(selected_gene(), "{chr}:{start}-{end}")
+    # bed_regions <- glue::glue_data(selected_gene(), "{chr}:{start}-{end}")
 
     # assemble UDF parameters
     udf_params <- list(
-      uri = input$uri_vcf,
+      array_uri = input$uri_vcf,
+      gene_name = input$`gene_selector-gene`,
+      # consequence = "missense_variant",
       attrs = list(
         "sample_name",
         "contig",
@@ -66,25 +68,25 @@ app_server <- function(input, output, session) {
         "query_bed_start",
         "query_bed_end"
       ),
-      # geneid = selected_gene()$ensgene,
-      regions = as.list(bed_regions),
+      pop = input$`sample_filter-population`,
+      # regions = as.list(bed_regions),
       # variant_filters = list(
       #   coding_only = input$coding_only
       # ),
       # sample_filters = list(
       #   hpoids = selected_hpo()
       # ),
-      samples = list("HG00097"),
-      region_partition = c(0L, 1L),
-      memory_budget_mb = 1024L
+      # region_partition = c(0L, 1L),
+      vcf_parallelization = 10,
+      memory_budget = 512L
     )
 
     message("Submitting UDF to TileDB Cloud")
     cli <- TileDBClient$new()
 
     cli$submit_udf(
-      namespace = "aaronwolen",
-      name = "aaronwolen/quokka3_read_gene_partition",
+      namespace = "TileDB-Inc",
+      name = "TileDB-Inc/vcf_annotation_example",
       args = udf_params
     )
   })
