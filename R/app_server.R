@@ -52,7 +52,7 @@ app_server <- function(input, output, session) {
     udf_params <- list(
       array_uri = input$uri_vcf,
       gene_name = selected_gene()$symbol[1],
-      # consequence = "missense_variant",
+      consequence = input$consequence,
       attrs = list(
         "sample_name",
         "contig",

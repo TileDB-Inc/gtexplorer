@@ -122,8 +122,13 @@ def vcf_annotation_example(
         WHERE gene_name = '{}')""".format(
         gene_name
     )
+
     if consequence is not None:
+      if isinstance(consequence, str):
         vep_query += f" AND consequence = '{consequence}'"
+      else:
+        vep_query +=  "AND consequence IN (" + ','.join(f'"{i}"' for i in consequence) + ")"
+        
 
     def build_regions(ensembl_df):
         """

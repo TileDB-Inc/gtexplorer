@@ -32,11 +32,24 @@ app_ui <- function(request) {
         hpoSelectorUI("hpo_selector"),
         sampleFilterUI("sample_filter"),
 
-        shiny::h4("Filters"),
+        shiny::h4("Variant Filters"),
         shiny::checkboxInput(
           inputId = "coding_only",
           label = "Restrict to coding changes",
-          value = FALSE
+          value = TRUE
+        ),
+        shiny::selectizeInput(
+          inputId = "consequence",
+          label = "VEP Consequence",
+          choices = vep_consequences,
+          multiple = TRUE,
+          options = list(
+            placeholder = "Select consequence",
+            maxItems = 3,
+            plugins = list(
+              "remove_button"
+            )
+          )
         ),
 
         shiny::actionButton("run_query", "Search")
