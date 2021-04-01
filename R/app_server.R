@@ -43,6 +43,13 @@ app_server <- function(input, output, session) {
     hpo_terms = hpo_terms
   )
 
+  shiny::observeEvent(input$reset, {
+    shinyjs::reset(id = "setup")
+    shiny::updateSelectInput(
+      inputId = "population",
+      selected = "Any"
+    )
+  })
 
   results <- shiny::eventReactive(input$run_query, {
 
@@ -108,4 +115,6 @@ app_server <- function(input, output, session) {
       readr::write_csv(jsonlite::fromJSON(results())$data, file)
     }
   )
+
+
 }

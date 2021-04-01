@@ -16,6 +16,7 @@ app_ui <- function(request) {
         "Home",
         shiny::sidebarLayout(
           sidebarPanel = shiny::sidebarPanel(
+            shinyjs::useShinyjs(),
             id = "setup",
 
             shiny::textInput(
@@ -58,7 +59,7 @@ app_ui <- function(request) {
             ),
 
             shiny::actionButton("run_query", "Search"),
-            shiny::downloadButton("reset", "Reset"),
+            shiny::actionButton("reset", "Reset"),
             shiny::downloadButton("download_results", "Download")
           ),
 
