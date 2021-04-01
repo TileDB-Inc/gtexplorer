@@ -97,7 +97,22 @@ app_server <- function(input, output, session) {
 
   tbl_results <- reactive({
     req(udf_output())
-    jsonlite::fromJSON(udf_output())$data
+    jsonlite::fromJSON(udf_output())$data %>%
+      dplyr::select(-transcript_id, -exon_number) %>%
+      dplyr::select(
+        sample_name,
+        hponame,
+        contig,
+        pos_start,
+        pos_end,
+        gene_name,
+        ref,
+        alt,
+        consequence,
+        codons,
+        everything()
+      ) %>%
+    dplyr::distinct()
   })
 
   output$table_results <- DT::renderDataTable({
