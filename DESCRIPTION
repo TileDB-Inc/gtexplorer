@@ -29,7 +29,8 @@ Imports:
     shinycssloaders,
     bslib,
     readr,
-    shinyjs
+    shinyjs,
+    magrittr
 Remotes:
   stephenturner/annotables
 Depends: 
