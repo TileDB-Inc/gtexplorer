@@ -92,12 +92,13 @@ app_server <- function(input, output, session) {
     req(results())
     message("Converting results to a table")
 
-    DT::datatable(
-      data = jsonlite::fromJSON(results())$data,
-      style = "bootstrap",
-      selection = "single",
-      extensions = "Responsive"
-    )
+    results() %>%
+      jsonlite::fromJSON()$data %>%
+      DT::datatable(
+        style = "bootstrap",
+        selection = "single",
+        extensions = "Responsive"
+      )
   })
 
 
