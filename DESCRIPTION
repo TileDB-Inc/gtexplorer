@@ -27,7 +27,8 @@ Imports:
     fauxpas,
     DT,
     shinycssloaders,
-    bslib
+    bslib,
+    readr
 Remotes:
   stephenturner/annotables
 Depends: 

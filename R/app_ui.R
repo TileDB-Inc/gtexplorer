@@ -56,13 +56,16 @@ app_ui <- function(request) {
               )
             ),
 
-            shiny::actionButton("run_query", "Search")
+            shiny::actionButton("run_query", "Search"),
+            shiny::downloadButton("reset", "Reset"),
+            shiny::downloadButton("download_results", "Download")
           ),
 
           mainPanel = shiny::mainPanel(
             shinycssloaders::withSpinner(DT::dataTableOutput("table_results"))
           )
-        )
+        ),
+
       )
     )
   )

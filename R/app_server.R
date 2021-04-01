@@ -95,7 +95,16 @@ app_server <- function(input, output, session) {
     DT::datatable(
       data = jsonlite::fromJSON(results())$data,
       style = "bootstrap",
-      selection = "single"
+      selection = "single",
+      extensions = "Responsive"
     )
   })
+
+
+  output$download_results <- shiny::downloadHandler(
+    filename = "tiledb-quokka-export.csv",
+    content = function(file) {
+      readr::write_csv(jsonlite::fromJSON(results())$data, file)
+    }
+  )
 }
