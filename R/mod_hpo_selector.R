@@ -28,7 +28,7 @@ hpoSelectorServer <- function(id, hpo_terms) {
       session,
       inputId = "hpo",
       choices = names(hpo_terms),
-      selected = "Increased CSF alpha-aminobutyrate concentration",
+      selected = "Anticardiolipin IgM antibody positivity",
       server = TRUE
     )
 
