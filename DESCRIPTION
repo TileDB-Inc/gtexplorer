@@ -28,7 +28,8 @@ Imports:
     DT,
     shinycssloaders,
     bslib,
-    readr
+    readr,
+    shinyjs
 Remotes:
   stephenturner/annotables
 Depends: 
