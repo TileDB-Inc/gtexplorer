@@ -51,7 +51,7 @@ app_server <- function(input, output, session) {
     )
   })
 
-  results <- shiny::eventReactive(input$run_query, {
+  udf_output <- shiny::eventReactive(input$run_query, {
 
     # bed_regions <- glue::glue_data(selected_gene(), "{chr}:{start}-{end}")
 
@@ -95,24 +95,28 @@ app_server <- function(input, output, session) {
     )
   })
 
+  tbl_results <- reactive({
+    req(udf_output())
+    jsonlite::fromJSON(udf_output())$data
+  })
+
   output$table_results <- DT::renderDataTable({
-    req(results())
+    req(tbl_results())
     message("Converting results to a table")
 
-    results() %>%
-      jsonlite::fromJSON()$data %>%
-      DT::datatable(
-        style = "bootstrap",
-        selection = "single",
-        extensions = "Responsive"
-      )
+    DT::datatable(
+      tbl_results(),
+      style = "bootstrap",
+      selection = "single",
+      extensions = "Responsive"
+    )
   })
 
 
   output$download_results <- shiny::downloadHandler(
     filename = "tiledb-quokka-export.csv",
     content = function(file) {
-      readr::write_csv(jsonlite::fromJSON(results())$data, file)
+      readr::write_csv(tbl_results(), file)
     }
   )
 
