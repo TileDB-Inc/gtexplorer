@@ -23,7 +23,7 @@ geneSelectorServer <- function(id, genes) {
         session,
         inputId = "gene",
         choices = genes()$symbol,
-        selected = c(Search = ""),
+        selected = "DRD2",
         server = TRUE,
         options = list(
           placeholder = "Enter Gene Symbol",

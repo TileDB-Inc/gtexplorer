@@ -48,6 +48,7 @@ app_ui <- function(request) {
               inputId = "consequence",
               label = "VEP Consequence",
               choices = vep_consequences,
+              selected = "missense_variant",
               multiple = TRUE,
               options = list(
                 placeholder = "Select consequence",

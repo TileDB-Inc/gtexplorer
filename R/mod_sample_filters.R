@@ -7,6 +7,7 @@ sampleFilterUI <- function(id) {
       inputId = ns("gender"),
       label = "Gender",
       multiple = FALSE,
+      selected = "female",
       choices = c("Any", sample_metadata$gender)
     ),
 
@@ -14,6 +15,7 @@ sampleFilterUI <- function(id) {
       inputId = ns("population"),
       label = "Population",
       multiple = FALSE,
+      selected = "GBR",
       choices = c("Any", sample_metadata$pop)
     )
 
