@@ -30,7 +30,8 @@ Imports:
     bslib,
     readr,
     shinyjs,
-    magrittr
+    magrittr,
+    shinydashboard
 Remotes:
   stephenturner/annotables
 Depends: 

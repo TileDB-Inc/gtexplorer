@@ -54,6 +54,32 @@ app_server <- function(input, output, session) {
     )
   })
 
+  output$samples <- renderValueBox({
+    valueBox(
+      dplyr::n_distinct(tbl_results()$sample_name),
+      "Unique Samples",
+      icon = icon("users")
+    )
+  })
+
+  output$variants <- renderValueBox({
+    valueBox(
+      nrow(dplyr::distinct(tbl_results(), pos_start, pos_end)),
+      "Unique Variants",
+      icon = icon("dna"),
+      color = "blue"
+    )
+  })
+
+  output$consequences <- renderValueBox({
+    valueBox(
+      dplyr::n_distinct(tbl_results()$consequence),
+      "Variant Consequences",
+      icon = icon("exclamation-triangle"),
+      color = "orange"
+    )
+  })
+
 
   output$download_results <- shiny::downloadHandler(
     filename = "tiledb-quokka-export.csv",
