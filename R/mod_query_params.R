@@ -1,6 +1,9 @@
+#' UDF Query Parameters Module
+
 queryParamsUI <- function(id) {
   ns <- shiny::NS(id)
-  shiny::tagList(
+  shiny::div(
+    id = ns("setup"),
 
     shiny::textInput(
       inputId = ns("uri_vcf"),
@@ -58,18 +61,16 @@ queryParamsUI <- function(id) {
       inputId = ns("consequence"),
       label = "VEP Consequence",
       choices = vep_consequences,
-      selected = "missense_variant",
       multiple = TRUE,
       options = list(
-        placeholder = "Select consequence",
         maxItems = 3,
         plugins = list("remove_button")
       )
     ),
 
     shiny::actionButton(ns("run_query"), "Search"),
-    shiny::actionButton(ns("reset"), "Reset"),
-
+    shiny::actionButton(ns("fill_example"), "Example"),
+    shiny::actionButton(ns("reset"), "Reset")
   )
 }
 
@@ -116,10 +117,6 @@ queryParamsServer <- function(id) {
       )
     })
 
-    observe({
-      message(glue::glue("There are now {nrow(all_genes())} genes."))
-    })
-
     selected_gene <- reactive({
       # req(genes())
       req(input$gene)
@@ -128,17 +125,19 @@ queryParamsServer <- function(id) {
       all_genes()[all_genes()$symbol == input$gene,]
     })
 
-    observe({
-      message(glue::glue("Selected gene: {selected_gene()}"))
+    shiny::observeEvent(input$fill_example, {
+      shiny::updateSelectizeInput(session, "pop", selected = "GBR")
+      shiny::updateSelectizeInput(session, "gender", selected = "female")
+      shiny::updateSelectizeInput(session, "consequence", selected = "missense_variant")
+      shiny::updateSelectizeInput(session, "hpo", selected = "Anticardiolipin IgM antibody positivity")
+      # updating server-side selection requires passing the choices again
+      shiny::updateSelectizeInput(session, "gene",
+                                  selected = "DRD2",
+                                  server = TRUE,
+                                  choices = c("", all_genes()$symbol))
     })
 
-    shiny::observeEvent(input$reset, {
-      shinyjs::reset(id = "setup")
-      shiny::updateSelectInput(
-        inputId = "pop",
-        selected = "Any"
-      )
-    })
+    shiny::observeEvent(input$reset, shinyjs::reset(id = "setup"))
 
     shiny::eventReactive(input$run_query, {
       message("Assembling UDF to TileDB Cloud")
@@ -167,6 +166,10 @@ queryParamsServer <- function(id) {
 }
 
 
+#' Query Parameters Module Test App
+#'
+#' @examples
+#' queryParamsApp()
 queryParamsApp <- function() {
   ui <- fluidPage(
     queryParamsUI("params"),
@@ -182,4 +185,3 @@ queryParamsApp <- function() {
   shinyApp(ui, server)
 }
 
-# queryParamsApp()

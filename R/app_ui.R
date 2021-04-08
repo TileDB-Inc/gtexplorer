@@ -6,6 +6,7 @@
 
 app_ui <- function(request) {
   shiny::tagList(
+    shinyjs::useShinyjs(),
     shiny::navbarPage(
       theme = bslib::bs_theme(
         primary = "#001f75",
@@ -16,8 +17,6 @@ app_ui <- function(request) {
         "Home",
         shiny::sidebarLayout(
           sidebarPanel = shiny::sidebarPanel(
-            shinyjs::useShinyjs(),
-            id = "setup",
             queryParamsUI("params"),
             shiny::downloadButton("download_results", "Download")
           ),
