@@ -9,95 +9,22 @@
 
 app_server <- function(input, output, session) {
 
-  all_contigs <- shiny::reactive({
-    message("Retrieving contigs for genome build")
-    supported_genomes[[tolower(input$genome)]]
-  })
+  query_params <- queryParamsServer("params")
 
-  # selected_contig <- regionSelectorServer(
-  #   id = "region_selector",
-  #   contigs = all_contigs
-  # )
-
-  # load appropriate annotables table
-  all_genes <- shiny::reactive({
-    message("Retrieving genes for genome build")
-
-    # TODO: create an internal index of gene names and drop annotables
-    utils::data(list = tolower(input$genome), package = "annotables")
-
-    # TODO: better handling of duplicate ensembl IDs and symbols
-    dplyr::distinct(
-      get(tolower(input$genome)),
-      .keep_all = TRUE
-    )
-  })
-
-  selected_gene <- geneSelectorServer(
-    id = "gene_selector",
-    genes = all_genes
-  )
-
-  selected_hpo <- hpoSelectorServer(
-    id = "hpo_selector",
-    hpo_terms = hpo_terms
-  )
-
-  shiny::observeEvent(input$reset, {
-    shinyjs::reset(id = "setup")
-    shiny::updateSelectInput(
-      inputId = "population",
-      selected = "Any"
-    )
-  })
-
-  udf_output <- shiny::eventReactive(input$run_query, {
-
-    # bed_regions <- glue::glue_data(selected_gene(), "{chr}:{start}-{end}")
-
-    # assemble UDF parameters
-    udf_params <- list(
-      array_uri = input$uri_vcf,
-      gene_name = selected_gene()$symbol[1],
-      consequence = input$consequence,
-      attrs = list(
-        "sample_name",
-        "contig",
-        "pos_start",
-        "pos_end",
-        # "fmt_GT",
-        "query_bed_start",
-        "query_bed_end"
-      ),
-      pop = input$`sample_filter-population`,
-      gender = input$`sample_filter-gender`,
-      # regions = as.list(bed_regions),
-      # variant_filters = list(
-      #   coding_only = input$coding_only
-      # ),
-      # sample_filters = list(
-      #   hpoids = selected_hpo()
-      # ),
-      # region_partition = c(0L, 1L),
-      vcf_parallelization = 10,
-      memory_budget = 512L,
-      hponame = selected_hpo()
-    )
-
-
+  query_results <- shiny::eventReactive(query_params(), {
     message("Submitting UDF to TileDB Cloud")
     cli <- TileDBClient$new()
 
     cli$submit_udf(
       namespace = "TileDB-Inc",
       name = "TileDB-Inc/vcf_annotation_example",
-      args = udf_params
+      args = query_params()
     )
   })
 
   tbl_results <- reactive({
-    req(udf_output())
-    jsonlite::fromJSON(udf_output())$data %>%
+    req(query_results())
+    jsonlite::fromJSON(query_results())$data %>%
       dplyr::select(-transcript_id, -exon_number) %>%
       dplyr::select(
         sample_name,
