@@ -63,4 +63,9 @@ app_server <- function(input, output, session) {
   )
 
 
+  tbl_results <- shiny::eventReactive(input$example_results, {
+    message("Loading example results table...")
+    example_results
+  })
+
 }

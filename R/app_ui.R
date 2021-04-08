@@ -18,7 +18,9 @@ app_ui <- function(request) {
         shiny::sidebarLayout(
           sidebarPanel = shiny::sidebarPanel(
             queryParamsUI("params"),
-            shiny::downloadButton("download_results", "Download")
+            shiny::actionButton("example_results", "Example Results"),
+            shiny::downloadButton("download_results", "Download"),
+
           ),
 
           mainPanel = shiny::mainPanel(
