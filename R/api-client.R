@@ -43,7 +43,8 @@ TileDBClient <- R6::R6Class(
         url = self$url,
         headers = headers,
         opts = list(
-          encode = "json"
+          encode = "json",
+          timeout_ms = 60000
         )
       )
     },
