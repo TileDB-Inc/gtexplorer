@@ -184,8 +184,7 @@ queryParamsServer <- function(id) {
         ),
         samples = selected_samples(),
         vcf_parallelization = 10,
-        memory_budget = 512L,
-        hponame = input$hpo
+        memory_budget = 512L
       )
     })
 

@@ -34,7 +34,6 @@ app_server <- function(input, output, session) {
     query_results() %>%
       dplyr::select(
         sample_name,
-        hponame,
         contig,
         pos_start,
         pos_end,
