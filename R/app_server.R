@@ -55,7 +55,11 @@ app_server <- function(input, output, session) {
       tbl_results(),
       style = "bootstrap",
       selection = "single",
-      extensions = "Responsive"
+      extensions = c("Responsive"),
+      callback = DT::JS("$('div.dwnld').append($('#download_results'));"),
+      options = list(
+        dom = 'B<"dwnld">frtip'
+      )
     )
   })
 

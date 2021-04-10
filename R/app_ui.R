@@ -27,7 +27,6 @@ app_ui <- function(request) {
           menuItem(
             "Settings",
             shiny::actionButton("example_results", "Example Results"),
-            shiny::downloadButton("download_results", "Download"),
             tabName = "settings",
             icon = icon("th")
           )
@@ -43,7 +42,10 @@ app_ui <- function(request) {
 
         fluidRow(
           box(
-            shinycssloaders::withSpinner(DT::dataTableOutput("table_results")),
+            shiny::downloadButton("download_results", "Download"),
+            shinycssloaders::withSpinner(
+              DT::dataTableOutput("table_results")
+            ),
             width = 12
           )
         )
