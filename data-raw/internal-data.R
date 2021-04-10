@@ -28,16 +28,19 @@ samples_array <- tiledb::tiledb_array(
   attrs = c("sampleuid", "pop", "super_pop", "gender")
 )
 
-tbl_samples <- samples_array[]
-
-sample_metadata <- subset(
-  tbl_samples,
-  select = -c(`__tiledb_rows`, sampleuid)
+tbl_samples <- subset(
+  samples_array[],
+  select = -`__tiledb_rows`
 )
 
-sample_metadata <- lapply(sample_metadata, unique)
+# Synthetic pairings of sample IDs and HPOs -------------------------------
+samplehpopair_array <- tiledb::tiledb_array(
+  uri = "s3://genomic-datasets/biological-databases/data/tables/samplehpopair",
+  as.data.frame = TRUE,
+  is.sparse = FALSE
+)
 
-
+tbl_samplehpopair <- subset(samplehpopair_array[], select = -`__tiledb_rows`)
 
 # Human Phenotype Ontology data -------------------------------------------
 # Create a character vector of HPO IDs indexed by their term names
@@ -49,17 +52,7 @@ hpoterms_array <- tiledb::tiledb_array(
   attrs = c("hpoid", "hponame")
 )
 
-tbl_hpoterms <- hpoterms_array[]
-
-
-samplehpopair_array <- tiledb::tiledb_array(
-  uri = "s3://genomic-datasets/biological-databases/data/tables/samplehpopair",
-  as.data.frame = TRUE,
-  is.sparse = FALSE
-)
-
-tbl_samplehpopair <- samplehpopair_array[]
-
+tbl_hpoterms <- subset(hpoterms_array[], select = -`__tiledb_rows`)
 
 # filter for terms actually assigned to samples
 stopifnot(anyDuplicated(tbl_hpoterms$hponame) == 0)
@@ -70,7 +63,7 @@ tbl_hpoterms <- subset(
   hponame != "All" & hpoid %in% unique(tbl_samplehpopair$hpoid)
 )
 
-hpo_terms <- setNames(tbl_hpoterms$hpoid, tbl_hpoterms$hponame)
+tbl_hpoterms <- tbl_hpoterms[order(tbl_hpoterms$hponame), ]
 
 
 # VEP Consequences --------------------------------------------------------
@@ -93,8 +86,9 @@ vep_consequences <- str_subset(unique(tbl_veps$consequence), fixed("&"), negate 
 # export ------------------------------------------------------------------
 
 usethis::use_data(
-  hpo_terms,
-  sample_metadata,
+  tbl_hpoterms,
+  tbl_samplehpopair,
+  tbl_samples,
   supported_genomes,
   vep_consequences,
   internal = TRUE,

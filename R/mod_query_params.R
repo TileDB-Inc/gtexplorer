@@ -32,14 +32,14 @@ queryParamsUI <- function(id) {
         inputId = ns(.x),
         label = .y,
         multiple = FALSE,
-        choices = c("Any", sample_metadata[[.x]])
+        choices = c("Any", unique(tbl_samples[[.x]]))
       )
     ),
 
     shiny::selectizeInput(
       inputId = ns("hpo"),
       label = "HPO Term",
-      choices = names(hpo_terms),
+      choices = setNames(tbl_hpoterms$hpoid, tbl_hpoterms$hponame),
       multiple = TRUE,
       options = list(
         # placeholder = "Enter HPO Term",
@@ -117,29 +117,58 @@ queryParamsServer <- function(id) {
     })
 
     selected_gene <- reactive({
-      # req(genes())
-      req(input$gene)
-      # browser()
+      shiny::req(input$gene)
       message("Selecting gene from table of all genes")
-      all_genes()[all_genes()$symbol == input$gene,]
+      all_genes()[all_genes()$symbol == input$gene, ]
+    })
+
+    selected_samples <- shiny::reactive({
+      message(glue::glue("Filtering samples"))
+
+      if (input$pop == "Any" && input$gender == "Any" && is.null(input$hpo)) {
+        message("No sample filtering parameters set")
+        return(NULL)
+      }
+
+      index_pop <- index_gender <- rep(TRUE, nrow(tbl_samples))
+      if (input$pop != "Any")
+        index_pop <- tbl_samples$pop == input$pop
+      if (input$gender != "Any")
+        index_gender <- tbl_samples$gender == input$gender
+
+      samples <- tbl_samples[index_pop & index_gender, "sampleuid"]
+      message(glue::glue("Selected {length(samples)} metadata samples"))
+
+      if (!is.null(input$hpo)) {
+        message(glue::glue("Filtering samples for HPO: {input$hpo}"))
+        hpo_samples <- tbl_samplehpopair$sampleuid[
+          tbl_samplehpopair$hpoid %in% input$hpo
+        ]
+        message(glue::glue("Selected {length(samples)} hpo samples"))
+        samples <- intersect(samples, hpo_samples)
+        message(glue::glue("{length(samples)} samples in common"))
+      }
+      samples
     })
 
     shiny::observeEvent(input$fill_example, {
       shiny::updateSelectizeInput(session, "pop", selected = "GBR")
       shiny::updateSelectizeInput(session, "gender", selected = "female")
       shiny::updateSelectizeInput(session, "consequence", selected = "missense_variant")
-      shiny::updateSelectizeInput(session, "hpo", selected = "Anticardiolipin IgM antibody positivity")
+      shiny::updateSelectizeInput(session, "hpo", selected = "HP:0020137")
+
       # updating server-side selection requires passing the choices again
       shiny::updateSelectizeInput(session, "gene",
-                                  selected = "DRD2",
-                                  server = TRUE,
-                                  choices = c("", all_genes()$symbol))
+        selected = "DRD2",
+        server = TRUE,
+        choices = c("", all_genes()$symbol)
+      )
     })
 
     shiny::observeEvent(input$reset, shinyjs::reset(id = "setup"))
 
     shiny::reactive({
-      message("Assembling UDF to TileDB Cloud")
+      message("Assembling query params")
       list(
         array_uri = input$uri_vcf,
         gene_name = selected_gene()$symbol[1],
@@ -153,8 +182,7 @@ queryParamsServer <- function(id) {
           "query_bed_start",
           "query_bed_end"
         ),
-        pop = input$pop,
-        gender = input$gender,
+        samples = selected_samples(),
         vcf_parallelization = 10,
         memory_budget = 512L,
         hponame = input$hpo
