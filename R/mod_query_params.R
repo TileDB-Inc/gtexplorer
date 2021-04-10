@@ -199,6 +199,7 @@ queryParamsServer <- function(id) {
 #' queryParamsApp()
 queryParamsApp <- function() {
   ui <- fluidPage(
+    shinyjs::useShinyjs(),
     queryParamsUI("params"),
     shiny::verbatimTextOutput("out")
   )

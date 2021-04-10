@@ -8,7 +8,7 @@
 
 app_ui <- function(request) {
     shinydashboard::dashboardPage(
-      # shinyjs::useShinyjs(),
+      shinyjs::useShinyjs(),
       # theme = bslib::bs_theme(primary = "#001f75", version = 3),
       header = dashboardHeader(
         title = "Quokka TileDB",
