@@ -1,3 +1,20 @@
+"""
+Example:
+import tiledb.cloud
+
+out = tiledb.cloud.udf.exec(
+    name = "TileDB-Inc/vcf_annotation_example",
+    task_name = "Quokka3QueryRegionTest",
+    array_uri = "tiledb://TileDB-Inc/vcf-1kg-phase3",
+    attrs = ["sample_name", "contig", "pos_start", "pos_end", "query_bed_start", "query_bed_end"],
+    gene_name = "DRD2",
+    consequence = "missense_variant",
+    vcf_parallelization = 5,
+    samples = ["HG00100","HG00125","HG00127","HG00130","HG00137","HG00154","HG00235","HG00236","HG00254","HG00257","HG00262"],
+    memory_budget = 512
+)
+"""
+
 def vcf_annotation_example(
     gene_name=None,
     array_uri=None,
@@ -46,7 +63,7 @@ def vcf_annotation_example(
             "contig",
             "pos_start",
             "pos_end",
-            "fmt_GT",
+            # "fmt_GT",
             "query_bed_start",
             "query_bed_end",
         ]
