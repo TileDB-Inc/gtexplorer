@@ -22,7 +22,8 @@ app_ui <- function(request) {
             shiny::actionButton("run_query", "Search"),
             shiny::checkboxInput("return_example_results", "Example Results"),
             tabName = "dashboard",
-            icon = icon("dashboard")
+            icon = icon("dashboard"),
+            startExpanded = TRUE
           ),
           menuItem(
             "Settings",
