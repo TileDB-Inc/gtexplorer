@@ -17,17 +17,18 @@ app_ui <- function(request) {
         width = 350,
         sidebarMenu(
           menuItem(
-            "Dashboard",
+            "Query",
             queryParamsUI("params"),
             shiny::actionButton("run_query", "Search"),
-            shiny::actionButton("example_results", "Example Results"),
-            shiny::downloadButton("download_results", "Download"),
+            shiny::checkboxInput("return_example_results", "Example Results"),
             tabName = "dashboard",
             icon = icon("dashboard")
           ),
           menuItem(
-            "Widgets",
-            tabName = "widgets",
+            "Settings",
+            shiny::actionButton("example_results", "Example Results"),
+            shiny::downloadButton("download_results", "Download"),
+            tabName = "settings",
             icon = icon("th")
           )
         )

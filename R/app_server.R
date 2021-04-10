@@ -12,20 +12,25 @@ app_server <- function(input, output, session) {
   query_params <- queryParamsServer("params")
 
   query_results <- shiny::eventReactive(input$run_query, {
-    message("Submitting UDF to TileDB Cloud")
-    cli <- TileDBClient$new()
+    if (input$return_example_results) {
+      message("Returning example results")
+      return(example_results)
+    } else {
+      message("Submitting UDF to TileDB Cloud")
+      cli <- TileDBClient$new()
 
-    cli$submit_udf(
-      namespace = "TileDB-Inc",
-      name = "TileDB-Inc/vcf_annotation_example",
-      args = query_params()
-    )
+      results <- cli$submit_udf(
+        namespace = "TileDB-Inc",
+        name = "TileDB-Inc/vcf_annotation_example",
+        args = query_params()
+      )
+      return(jsonlite::fromJSON(results)$data)
+    }
   })
 
   tbl_results <- reactive({
     req(query_results())
-    jsonlite::fromJSON(query_results())$data %>%
-      dplyr::select(-transcript_id, -exon_number) %>%
+    query_results() %>%
       dplyr::select(
         sample_name,
         hponame,
@@ -87,11 +92,4 @@ app_server <- function(input, output, session) {
       readr::write_csv(tbl_results(), file)
     }
   )
-
-
-  tbl_results <- shiny::eventReactive(input$example_results, {
-    message("Loading example results table...")
-    example_results
-  })
-
 }
