@@ -5,9 +5,7 @@ def vcf_annotation_example(
     attrs=None,
     memory_budget=512,
     vcf_parallelization=1,
-    pop="Any",
-    gender="Any",
-    hponame=None
+    samples=None
 ):
     import tiledb
     import tiledb.cloud
@@ -19,7 +17,7 @@ def vcf_annotation_example(
         host=os.environ["TILEDB_REST_SERVER_ADDRESS"],
         token=os.environ["TILEDB_REST_TOKEN"],
     )
-    
+
 
     print(
       "Parameters:\n"
@@ -29,9 +27,7 @@ def vcf_annotation_example(
       f"...attrs={attrs}\n"
       f"...memory_budget={memory_budget}\n"
       f"...vcf_parallelization={vcf_parallelization}\n"
-      f"...pop={pop}\n"
-      f"...gender={gender}\n"
-      f"...hponame={hponame}\n"
+      f"...samples={0 if samples is None else len(samples)}\n"
     )
 
     # For this demo we will look at the BRCA2 gene
@@ -54,39 +50,6 @@ def vcf_annotation_example(
             "query_bed_start",
             "query_bed_end",
         ]
-
-    # Sample metadata query
-    sample_query = (
-        "select sampleuid from `tiledb://TileDB-Inc/vcf-1kg_sample_phenotype`"
-    )
-    
-    # HPO term query
-    hpo_query = """SELECT
-        samplehpopair.sampleuid,
-        samplehpopair.hpoid,
-        hpoterms.hponame
-        FROM `tiledb://TileDB-Inc/vcf-1kg_sample_phenotype` 1kg_sample_phenotype
-        LEFT JOIN `tiledb://TileDB-Inc/samplehpopair` samplehpopair ON samplehpopair.sampleuid = 1kg_sample_phenotype.sampleuid
-        LEFT JOIN `tiledb://TileDB-Inc/hpoterms` hpoterms ON hpoterms.hpoid = samplehpopair.hpoid
-        WHERE hpoterms.hponame != 'NA'
-        """
-
-    if pop != "Any" and gender == "Any":
-        sample_query += f" WHERE pop = '{pop}'"
-        hpo_query += f" AND pop = '{pop}'"
-    elif pop == "Any" and gender != "Any":
-        sample_query += f" WHERE gender = '{gender}'"
-        hpo_query += f" AND gender = '{gender}'"
-    elif pop != "Any" and gender != "Any":
-        sample_query += f" WHERE pop = '{pop}' AND gender = '{gender}'"
-        hpo_query += f" AND pop = '{pop}' AND gender = '{gender}'"
-
-    if hponame is not None:
-      if isinstance(hponame, str):
-        hpo_query += f" AND hpoterms.hponame = '{hponame}'"
-      else:
-        hpo_query +=  "AND hpoterms.hponame IN (" + ','.join(f'"{i}"' for i in hponame) + ")"
-        
 
     ensembl_query = """SELECT
                       ensemblexon.chrom chrom,
@@ -125,7 +88,7 @@ def vcf_annotation_example(
         vep_query += f" AND consequence = '{consequence}'"
       else:
         vep_query +=  "AND consequence IN (" + ','.join(f'"{i}"' for i in consequence) + ")"
-        
+
 
     def build_regions(ensembl_df):
         """
@@ -211,20 +174,6 @@ def vcf_annotation_example(
 
         return results
 
-    # This function will join the VCF variants with the sample annotations
-    def annotate_samples(vcf_data, sample_df):
-        import pyarrow as pa
-
-        if isinstance(vcf_data, pa.Table):
-            vcf_data = vcf_data.to_pandas()
-
-        return vcf_data.merge(
-            sample_df.rename(columns={"sampleuid": "sample_name"}), how="inner"
-        )
-
-    # Retrieve specified samples
-    delayed_samples = DelayedSQL(sample_query, name="Samples")
-
     # tiledb.cloud.client.client.retry_mode("forceful")
     delayed_veps = DelayedSQL(vep_query, name="VEPs")
     delayed_ensembl = DelayedSQL(ensembl_query, name="Regions")
@@ -245,7 +194,7 @@ def vcf_annotation_example(
                 attrs,
                 delayed_regions,
                 (p, vcf_parallelization),
-                delayed_samples,
+                samples,
                 memory_budget,
             )
         )
@@ -254,19 +203,8 @@ def vcf_annotation_example(
         delayed_reads
     )
 
-    delayed_hpo = DelayedSQL(
-        hpo_query,
-        name="HPO",
-        init_commands=[
-            "SET mytile_reopen_for_every_query=0, mytile_compute_table_records=1"
-        ],
-    )
-    delayed_samples = Delayed(annotate_samples, name="Annotate_Samples")(
-        delayed_vcf_results, delayed_hpo
-    )
-
     delayed_results = Delayed(annotate_variants, name="Annotate_Variants", local=True)(
-        delayed_samples, delayed_ensembl, delayed_veps
+        delayed_vcf_results, delayed_ensembl, delayed_veps
     )
 
     results = delayed_results.compute()
