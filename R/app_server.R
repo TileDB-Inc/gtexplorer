@@ -11,7 +11,7 @@ app_server <- function(input, output, session) {
 
   query_params <- queryParamsServer("params")
 
-  query_results <- shiny::eventReactive(query_params(), {
+  query_results <- shiny::eventReactive(input$run_query, {
     message("Submitting UDF to TileDB Cloud")
     cli <- TileDBClient$new()
 

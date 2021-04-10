@@ -68,7 +68,6 @@ queryParamsUI <- function(id) {
       )
     ),
 
-    shiny::actionButton(ns("run_query"), "Search"),
     shiny::actionButton(ns("fill_example"), "Example"),
     shiny::actionButton(ns("reset"), "Reset")
   )
@@ -139,7 +138,7 @@ queryParamsServer <- function(id) {
 
     shiny::observeEvent(input$reset, shinyjs::reset(id = "setup"))
 
-    shiny::eventReactive(input$run_query, {
+    shiny::reactive({
       message("Assembling UDF to TileDB Cloud")
       list(
         array_uri = input$uri_vcf,

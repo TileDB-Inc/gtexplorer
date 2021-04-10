@@ -19,6 +19,7 @@ app_ui <- function(request) {
           menuItem(
             "Dashboard",
             queryParamsUI("params"),
+            shiny::actionButton("run_query", "Search"),
             shiny::actionButton("example_results", "Example Results"),
             shiny::downloadButton("download_results", "Download"),
             tabName = "dashboard",
