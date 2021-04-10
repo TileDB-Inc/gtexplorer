@@ -31,9 +31,24 @@ app_server <- function(input, output, session) {
 
   tbl_results <- reactive({
     req(query_results())
-    query_results() %>%
+    dplyr::tibble(query_results()) %>%
+
+      # drop duplicates caused by variants appearing in multiple txs/exons
+      dplyr::select(-transcript_id, -exon_number) %>%
+      dplyr::distinct() %>%
+
+      # add sample annotations
+      dplyr::inner_join(tbl_samples, by = c(sample_name = "sampleuid")) %>%
+      dplyr::inner_join(tbl_samplehpopair, by = c(sample_name = "sampleuid")) %>%
+      dplyr::inner_join(tbl_hpoterms, by = "hpoid") %>%
+      dplyr::select(-hpoid) %>%
+
+      # reorder columns
       dplyr::select(
         sample_name,
+        pop,
+        gender,
+        hponame,
         contig,
         pos_start,
         pos_end,
@@ -42,9 +57,8 @@ app_server <- function(input, output, session) {
         alt,
         consequence,
         codons,
-        everything()
-      ) %>%
-    dplyr::distinct()
+        dplyr::everything()
+      )
   })
 
   output$table_results <- DT::renderDataTable({
