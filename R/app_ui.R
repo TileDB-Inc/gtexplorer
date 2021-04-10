@@ -25,12 +25,6 @@ app_ui <- function(request) {
             tabName = "dashboard",
             icon = icon("dashboard"),
             startExpanded = TRUE
-          ),
-          menuItem(
-            "Settings",
-            shiny::actionButton("example_results", "Example Results"),
-            tabName = "settings",
-            icon = icon("th")
           )
         )
       ),
