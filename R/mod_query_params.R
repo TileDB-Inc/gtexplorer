@@ -52,11 +52,11 @@ queryParamsUI <- function(id) {
 
 
     shiny::h4("Variant Filters"),
-    shiny::checkboxInput(
-      inputId = ns("coding_only"),
-      label = "Restrict to coding changes",
-      value = TRUE
-    ),
+    # shiny::checkboxInput(
+    #   inputId = ns("coding_only"),
+    #   label = "Restrict to coding changes",
+    #   value = TRUE
+    # ),
     shiny::selectizeInput(
       inputId = ns("consequence"),
       label = "VEP Consequence",
