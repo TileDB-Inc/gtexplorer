@@ -18,6 +18,10 @@ app_ui <- function(request) {
         width = 350,
         sidebarMenu(
           menuItem(
+            "Setup",
+            shiny::checkboxInput("return_example_results", "Example Results")
+          ),
+          menuItem(
             "Query",
             queryParamsUI("params"),
             shiny::actionButton("run_query", "Search"),
