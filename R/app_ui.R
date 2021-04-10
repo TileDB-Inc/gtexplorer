@@ -2,10 +2,11 @@
 #'
 #' @param request Internal parameter for `{shiny}`.
 #' @import shiny shinydashboard
+#' @importFrom DT dataTableOutput
+#' @importFrom shinycssloaders withSpinner
 #' @noRd
 
 app_ui <- function(request) {
-  # shiny::tagList(
     shinydashboard::dashboardPage(
       # shinyjs::useShinyjs(),
       # theme = bslib::bs_theme(primary = "#001f75", version = 3),
@@ -50,15 +51,6 @@ app_ui <- function(request) {
             width = 12
           )
         )
-
-        # tabItems(
-        #  tabItem("table",
-        #     fluidRow(
-        #      shinycssloaders::withSpinner(DT::dataTableOutput("table_results"))
-        #     )
-        #  )
-        # )
       )
     )
-  # )
 }

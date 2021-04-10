@@ -5,6 +5,7 @@
 #' @importFrom glue glue_data
 #' @importFrom dplyr distinct
 #' @importFrom jsonlite toJSON
+#' @importFrom DT datatable renderDataTable JS
 #' @noRd
 
 app_server <- function(input, output, session) {
