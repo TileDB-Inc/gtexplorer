@@ -2,7 +2,7 @@ Package: quokka3
 Title: Quokka3 Frontend
 Description: A shiny-based frontend for the TileDB-backed Quokka database.
 Version: 0.0.0.9000
-Authors@R: 
+Authors@R:
     person(given = "Aaron",
            family = "Wolen",
            role = c("aut", "cre"),
@@ -13,7 +13,7 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-Imports: 
+Imports:
     shiny (>= 1.6.0),
     dplyr,
     purrr,
@@ -32,10 +32,11 @@ Imports:
     shinyjs,
     magrittr,
     shinydashboard,
+    GenomicAlignments,
     GenomicFeatures,
     TxDb.Hsapiens.UCSC.hg19.knownGene,
     TxDb.Hsapiens.UCSC.hg38.knownGene
 Remotes:
   stephenturner/annotables
-Depends: 
+Depends:
     R (>= 2.10)
