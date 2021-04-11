@@ -34,10 +34,6 @@ app_server <- function(input, output, session) {
     req(query_results())
     dplyr::tibble(query_results()) %>%
 
-      # drop duplicates caused by variants appearing in multiple txs/exons
-      dplyr::select(-transcript_id, -exon_number) %>%
-      dplyr::distinct() %>%
-
       # add sample annotations
       dplyr::inner_join(tbl_samples, by = c(sample_name = "sampleuid")) %>%
       dplyr::inner_join(tbl_samplehpopair, by = c(sample_name = "sampleuid")) %>%
@@ -53,7 +49,7 @@ app_server <- function(input, output, session) {
         contig,
         pos_start,
         pos_end,
-        gene_name,
+        # gene_name,
         ref,
         alt,
         consequence,

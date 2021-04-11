@@ -7,7 +7,7 @@ out = tiledb.cloud.udf.exec(
     task_name = "Quokka3QueryRegionTest",
     array_uri = "tiledb://TileDB-Inc/vcf-1kg-phase3",
     attrs = ["sample_name", "contig", "pos_start", "pos_end", "query_bed_start", "query_bed_end"],
-    gene_name = "DRD2",
+    gene_id = "ENSG00000149295", # DRD2
     consequence = "missense_variant",
     vcf_parallelization = 5,
     samples = ["HG00100","HG00125","HG00127","HG00130","HG00137","HG00154","HG00235","HG00236","HG00254","HG00257","HG00262"],
@@ -16,13 +16,14 @@ out = tiledb.cloud.udf.exec(
 """
 
 def vcf_annotation_example(
-    gene_name=None,
     array_uri=None,
     consequence=None,
     attrs=None,
     memory_budget=512,
     vcf_parallelization=1,
-    samples=None
+    samples=None,
+    gene_id=None,
+    regions=None
 ):
     import tiledb
     import tiledb.cloud
@@ -38,8 +39,9 @@ def vcf_annotation_example(
 
     print(
       "Parameters:\n"
-      f"...gene_name={gene_name}\n"
       f"...array_uri={array_uri}\n"
+      f"...gene_id={gene_id}\n"
+      f"...regions={0 if regions is None else len(regions)}\n"
       f"...consequence={consequence}\n"
       f"...attrs={attrs}\n"
       f"...memory_budget={memory_budget}\n"
@@ -48,7 +50,7 @@ def vcf_annotation_example(
     )
 
     # For this demo we will look at the BRCA2 gene
-    # gene_name = 'KCNQ2'
+    # gene_id = 'ENSG00000149295'
 
     # VEP consequence (e.g., missense_variant, stop_gained, etc)
     # consequence = "missense_variant"
@@ -68,21 +70,6 @@ def vcf_annotation_example(
             "query_bed_end",
         ]
 
-    ensembl_query = """SELECT
-                      ensemblexon.chrom chrom,
-                      ensemblexon.pos_start pos_start,
-                      ensemblexon.pos_end pos_end,
-                      ensemblgene.gene_id,
-                      ensemblgene.gene_name,
-                      ensemblgene.strand,
-                      ensemblexon.transcript_id,
-                      ensemblexon.exon_number
-                    FROM `tiledb://TileDB-Inc/ensemblgene_sparse` ensemblgene
-                    LEFT JOIN `tiledb://TileDB-Inc/ensemblexon_sparse` ensemblexon ON ensemblexon.gene_id = ensemblgene.gene_id
-                    WHERE ensemblgene.gene_name = '{}'""".format(
-        gene_name
-    )
-
     # Varient annotation
     vep_query = """SELECT vepvariantannotation.chrom,
       vepvariantannotation.pos_start,
@@ -93,11 +80,8 @@ def vcf_annotation_example(
       vepvariantannotation.codons,
       vepvariantannotation.aminoacids
     FROM `tiledb://TileDB-Inc/vepvariantannotation` vepvariantannotation
-    WHERE gene_id = (
-        select gene_id
-        from `tiledb://TileDB-Inc/ensemblgene_sparse`
-        WHERE gene_name = '{}')""".format(
-        gene_name
+    WHERE gene_id = '{}'""".format(
+        gene_id
     )
 
     if consequence is not None:
@@ -106,18 +90,6 @@ def vcf_annotation_example(
       else:
         vep_query +=  "AND consequence IN (" + ','.join(f'"{i}"' for i in consequence) + ")"
 
-
-    def build_regions(ensembl_df):
-        """
-        Helper function to convert chromosome, start/end to proper region syntax
-        """
-        import pandas
-
-        regions = []
-        for row in ensembl_df.itertuples():
-            regions.append(f"{row.chrom}:{row.pos_start}-{row.pos_end}")
-
-        return pandas.unique(regions).tolist()
 
     def read_gene_partition(
         uri, attrs, regions, region_partition, samples, memory_budget_mb
@@ -159,8 +131,8 @@ def vcf_annotation_example(
         print(f"Input list contains {len(df_list)} items")
         return pa.concat_tables([x for x in df_list if x is not None])
 
-    # This function will join the ensemble data with the variant information
-    def annotate_variants(vcf_data, ensembl_df, vep_df):
+    # This function will join the vcf results data with known veps
+    def annotate_variants(vcf_data, vep_df):
         import pyarrow as pa
 
         if isinstance(vcf_data, pa.Table):
@@ -169,22 +141,8 @@ def vcf_annotation_example(
         # The VCF bed start is zero indexed but ensembl is 1 index, so shift by one
         vcf_data["query_bed_start"] += 1
 
-        # Fixup ensembl, need to force pandas to treat the chromosome as a string
-        ensembl_df = ensembl_df.astype({"chrom": "str"})
-
-        results = vcf_data.merge(
-            ensembl_df.drop_duplicates().rename(
-                columns={
-                    "pos_start": "query_bed_start",
-                    "pos_end": "query_bed_end",
-                    "chrom": "contig",
-                }
-            ),
-            how="left",
-        )
-
         # Add VEP data
-        results = results.merge(
+        results = vcf_data.merge(
             vep_df.rename(columns={"chrom": "contig"}).astype({"contig": "str"}),
             how="inner",
         )
@@ -193,10 +151,6 @@ def vcf_annotation_example(
 
     # tiledb.cloud.client.client.retry_mode("forceful")
     delayed_veps = DelayedSQL(vep_query, name="VEPs")
-    delayed_ensembl = DelayedSQL(ensembl_query, name="Regions")
-    delayed_regions = Delayed(build_regions, name="Build_Regions", local=True)(
-        delayed_ensembl
-    )
 
     delayed_reads = []
     for p in range(vcf_parallelization):
@@ -209,7 +163,7 @@ def vcf_annotation_example(
             )(
                 array_uri,
                 attrs,
-                delayed_regions,
+                regions,
                 (p, vcf_parallelization),
                 samples,
                 memory_budget,
@@ -221,7 +175,7 @@ def vcf_annotation_example(
     )
 
     delayed_results = Delayed(annotate_variants, name="Annotate_Variants", local=True)(
-        delayed_vcf_results, delayed_ensembl, delayed_veps
+        delayed_vcf_results, delayed_veps
     )
 
     results = delayed_results.compute()

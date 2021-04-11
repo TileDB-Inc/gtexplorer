@@ -81,9 +81,12 @@ queryParamsServer <- function(id) {
 
   shiny::moduleServer(id, function(input, output, session) {
 
-    all_contigs <- shiny::reactive({
-      message("Retrieving contigs for genome build")
-      supported_genomes[[tolower(input$genome)]]
+    txdb <- shiny::reactive({
+      message("Retrieving transcript database for genome build")
+      switch(tolower(input$genome),
+        grch37 = TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene,
+        grch38 = TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
+      )
     })
 
     # load appropriate annotables table
@@ -108,8 +111,8 @@ queryParamsServer <- function(id) {
       shiny::updateSelectizeInput(
         session,
         inputId = "gene",
-        choices = c("", all_genes()$symbol),
-        # selected = "DRD2",
+        choices = setNames(all_genes()$ensgene, all_genes()$symbol),
+        selected = "",
         server = TRUE
         # options = list(
         #   placeholder = "Enter Gene Symbol",
@@ -121,7 +124,17 @@ queryParamsServer <- function(id) {
     selected_gene <- reactive({
       shiny::req(input$gene)
       message("Selecting gene from table of all genes")
-      all_genes()[all_genes()$symbol == input$gene, ]
+      all_genes()[all_genes()$ensgene == input$gene, ]
+    })
+
+    selected_regions <- reactive({
+      req(selected_gene())
+      gene_filter <- list(gene_id = selected_gene()$entrez[1])
+      regions <- as.data.frame(
+        GenomicFeatures::exons(txdb(), filter = gene_filter)
+      )
+      regions$seqnames <- stringr::str_remove(regions$seqnames, "chr")
+      glue::glue_data(as.data.frame(regions), "{seqnames}:{start}-{end}")
     })
 
     selected_samples <- shiny::reactive({
@@ -161,9 +174,9 @@ queryParamsServer <- function(id) {
 
       # updating server-side selection requires passing the choices again
       shiny::updateSelectizeInput(session, "gene",
-        selected = "DRD2",
+        selected = "ENSG00000149295", # DRD2
         server = TRUE,
-        choices = c("", all_genes()$symbol)
+        choices = setNames(all_genes()$ensgene, all_genes()$symbol)
       )
     })
 
@@ -172,7 +185,8 @@ queryParamsServer <- function(id) {
     shiny::reactive({
       message("Assembling query params")
       list(
-        gene_name = selected_gene()$symbol[1],
+        gene_id = selected_gene()$ensgene[1],
+        regions = selected_regions(),
         consequence = input$consequence,
         attrs = list(
           "sample_name",

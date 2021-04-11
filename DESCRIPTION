@@ -31,7 +31,10 @@ Imports:
     readr,
     shinyjs,
     magrittr,
-    shinydashboard
+    shinydashboard,
+    GenomicFeatures,
+    TxDb.Hsapiens.UCSC.hg19.knownGene,
+    TxDb.Hsapiens.UCSC.hg38.knownGene
 Remotes:
   stephenturner/annotables
 Depends: 
