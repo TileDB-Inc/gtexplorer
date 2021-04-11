@@ -12,6 +12,15 @@ queryParamsUI <- function(id) {
       placeholder = "e.g., tiledb://TileDB-Inc/vcf-1kg-phase3"
     ),
 
+    shiny::sliderInput(
+      inputId = ns("vcf_query_nodes"),
+      label = "VCF Query Nodes",
+      min = 1,
+      max = 20,
+      value = 5,
+      step = 1
+    ),
+
     shiny::selectInput(
       inputId = ns("genome"),
       label = "Genome Build",
@@ -192,7 +201,7 @@ queryParamsServer <- function(id) {
           "query_bed_end"
         ),
         samples = selected_samples(),
-        vcf_parallelization = 10,
+        vcf_parallelization = input$vcf_query_nodes,
         memory_budget = 512L
       )
     })
