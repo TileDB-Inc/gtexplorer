@@ -17,10 +17,7 @@ app_ui <- function(request) {
       sidebar = dashboardSidebar(
         width = 350,
         sidebarMenu(
-          menuItem(
-            "Setup",
-            shiny::checkboxInput("return_example_results", "Example Results")
-          ),
+
           menuItem(
             "Query",
             queryParamsUI("params"),
@@ -37,6 +34,10 @@ app_ui <- function(request) {
             tabName = "dashboard",
             icon = icon("dashboard"),
             startExpanded = TRUE
+          ),
+           menuItem(
+            "Config",
+            shiny::checkboxInput("return_example_results", "Example Results")
           )
         )
       ),
