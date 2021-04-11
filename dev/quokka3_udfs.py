@@ -153,7 +153,11 @@ def vcf_annotation_example(
         return results
 
     # tiledb.cloud.client.client.retry_mode("forceful")
-    delayed_veps = DelayedSQL(vep_query, name="VEPs")
+    delayed_veps = DelayedSQL(
+        vep_query,
+        name="VEPs",
+        init_commands=["SET mytile_reopen_for_every_query=0, mytile_compute_table_records=1"]
+    )
 
     delayed_reads = []
     for p in range(vcf_parallelization):
