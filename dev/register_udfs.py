@@ -21,3 +21,18 @@ else:
     tiledb.cloud.udf.update_udf(
         func=udf_func, name=udf_name, namespace=namespace, type="generic",
     )
+
+tiledb.cloud.udf.update_udf(
+  func=vcf_annotation_example, name=udf_name, namespace=namespace, type="generic",
+)
+
+
+
+
+tiledb.cloud.udf.register_udf(
+    func=udf_func,
+    name="vcf_annotation_example",
+    namespace=namespace,
+    type="generic",
+    include_source_lines=False,
+)

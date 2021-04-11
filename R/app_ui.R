@@ -25,7 +25,6 @@ app_ui <- function(request) {
             "Query",
             queryParamsUI("params"),
             shiny::actionButton("run_query", "Search"),
-            shiny::checkboxInput("return_example_results", "Example Results"),
             tabName = "dashboard",
             icon = icon("dashboard"),
             startExpanded = TRUE
