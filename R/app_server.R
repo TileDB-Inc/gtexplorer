@@ -21,10 +21,16 @@ app_server <- function(input, output, session) {
       message("Submitting UDF to TileDB Cloud")
       cli <- TileDBClient$new()
 
+      udf_start <- Sys.time()
       results <- cli$submit_udf(
         namespace = "TileDB-Inc",
         name = "TileDB-Inc/vcf_annotation_example",
         args = c(query_params(), config_params())
+      )
+      udf_stop <- Sys.time()
+      udf_time <- difftime(udf_stop, udf_start, units = "secs")
+      message(
+        glue::glue("UDF took {round(udf_time, 1)} sec")
       )
       return(jsonlite::fromJSON(results)$data)
     }
