@@ -46,7 +46,8 @@ app_ui <- function(request) {
 
            menuItem(
             "Test",
-            shiny::checkboxInput("return_example_results", "Example Results")
+            shiny::checkboxInput("return_example_results", "Example Results"),
+            icon = icon("bug")
           )
         )
       ),
