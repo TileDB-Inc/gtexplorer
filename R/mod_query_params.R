@@ -5,22 +5,6 @@ queryParamsUI <- function(id) {
   shiny::div(
     id = ns("setup"),
 
-    shiny::textInput(
-      inputId = ns("uri_vcf"),
-      label = "TileDB-VCF Dataset URI",
-      value = "tiledb://TileDB-Inc/vcf-1kg-phase3",
-      placeholder = "e.g., tiledb://TileDB-Inc/vcf-1kg-phase3"
-    ),
-
-    shiny::sliderInput(
-      inputId = ns("vcf_query_nodes"),
-      label = "VCF Query Nodes",
-      min = 1,
-      max = 20,
-      value = 5,
-      step = 1
-    ),
-
     shiny::selectInput(
       inputId = ns("genome"),
       label = "Genome Build",
@@ -188,7 +172,6 @@ queryParamsServer <- function(id) {
     shiny::reactive({
       message("Assembling query params")
       list(
-        array_uri = input$uri_vcf,
         gene_name = selected_gene()$symbol[1],
         consequence = input$consequence,
         attrs = list(
@@ -200,9 +183,7 @@ queryParamsServer <- function(id) {
           "query_bed_start",
           "query_bed_end"
         ),
-        samples = selected_samples(),
-        vcf_parallelization = input$vcf_query_nodes,
-        memory_budget = 512L
+        samples = selected_samples()
       )
     })
 

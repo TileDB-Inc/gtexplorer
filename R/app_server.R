@@ -11,6 +11,7 @@
 app_server <- function(input, output, session) {
 
   query_params <- queryParamsServer("params")
+  config_params <- configParamsServer("params")
 
   query_results <- shiny::eventReactive(input$run_query, {
     if (input$return_example_results) {
@@ -23,7 +24,7 @@ app_server <- function(input, output, session) {
       results <- cli$submit_udf(
         namespace = "TileDB-Inc",
         name = "TileDB-Inc/vcf_annotation_example",
-        args = query_params()
+        args = c(query_params(), config_params())
       )
       return(jsonlite::fromJSON(results)$data)
     }

@@ -19,6 +19,14 @@ app_ui <- function(request) {
         sidebarMenu(
 
           menuItem(
+            "Configure",
+            configParamsUI("params"),
+            tabName = "configure",
+            icon = icon("cogs"),
+            startExpanded = FALSE
+          ),
+
+          menuItem(
             "Query",
             queryParamsUI("params"),
             shiny::fluidRow(
@@ -35,8 +43,9 @@ app_ui <- function(request) {
             icon = icon("dashboard"),
             startExpanded = TRUE
           ),
+
            menuItem(
-            "Config",
+            "Test",
             shiny::checkboxInput("return_example_results", "Example Results")
           )
         )
