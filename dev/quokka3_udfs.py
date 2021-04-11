@@ -80,9 +80,12 @@ def vcf_annotation_example(
       vepvariantannotation.codons,
       vepvariantannotation.aminoacids
     FROM `tiledb://TileDB-Inc/vepvariantannotation` vepvariantannotation
-    WHERE gene_id = '{}'""".format(
-        gene_id
-    )
+    """
+
+    if isinstance(gene_id, str):
+        vep_query += f" WHERE gene_id = '{gene_id}'"
+    else:
+        vep_query +=  "WHERE gene_id IN (" + ','.join(f'"{i}"' for i in gene_id) + ")"
 
     if consequence is not None:
       if isinstance(consequence, str):

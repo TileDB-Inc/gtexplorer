@@ -14,7 +14,14 @@ queryParamsUI <- function(id) {
     shiny::selectizeInput(
       inputId = ns("gene"),
       label = "Gene Symbol",
-      choices = NULL
+      choices = NULL,
+      multiple = TRUE,
+      options = list(
+        maxItems = 3,
+        plugins = list(
+          "remove_button"
+        )
+      )
     ),
 
     shiny::h4("Filter Samples"),
@@ -114,22 +121,18 @@ queryParamsServer <- function(id) {
         choices = setNames(all_genes()$ensgene, all_genes()$symbol),
         selected = "",
         server = TRUE
-        # options = list(
-        #   placeholder = "Enter Gene Symbol",
-        #   openOnFocus = TRUE
-        # )
       )
     })
 
-    selected_gene <- reactive({
+    selected_genes <- reactive({
       shiny::req(input$gene)
-      message("Selecting gene from table of all genes")
-      all_genes()[all_genes()$ensgene == input$gene, ]
+      message("Selecting genes from table of all genes")
+      all_genes()[all_genes()$ensgene %in% input$gene, ]
     })
 
     selected_regions <- reactive({
-      req(selected_gene())
-      gene_filter <- list(gene_id = selected_gene()$entrez[1])
+      req(selected_genes())
+      gene_filter <- list(gene_id = selected_genes()$entrez)
       regions <- as.data.frame(
         GenomicFeatures::exons(txdb(), filter = gene_filter)
       )
@@ -185,7 +188,7 @@ queryParamsServer <- function(id) {
     shiny::reactive({
       message("Assembling query params")
       list(
-        gene_id = selected_gene()$ensgene[1],
+        gene_id = selected_genes()$ensgene,
         regions = selected_regions(),
         consequence = input$consequence,
         attrs = list(
