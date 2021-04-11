@@ -68,8 +68,17 @@ queryParamsUI <- function(id) {
       )
     ),
 
-    shiny::actionButton(ns("fill_example"), "Example"),
-    shiny::actionButton(ns("reset"), "Reset")
+    shiny::fluidRow(
+      shiny::column(
+        width = 4,
+        shiny::actionButton(ns("fill_example"), "Example Query")
+      ),
+      shiny::column(
+        width = 4,
+        shiny::actionButton(ns("reset"), "Reset Inputs", icon = icon("undo"))
+      )
+    )
+
   )
 }
 

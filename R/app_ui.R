@@ -24,7 +24,16 @@ app_ui <- function(request) {
           menuItem(
             "Query",
             queryParamsUI("params"),
-            shiny::actionButton("run_query", "Search"),
+            shiny::fluidRow(
+              shiny::column(
+                width = 4,
+                shiny::actionButton(
+                  "run_query",
+                  "Run Query",
+                  icon = icon("search")
+                )
+              )
+            ),
             tabName = "dashboard",
             icon = icon("dashboard"),
             startExpanded = TRUE
