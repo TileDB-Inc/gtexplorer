@@ -41,7 +41,7 @@ def vcf_annotation_example(
       "Parameters:\n"
       f"...array_uri={array_uri}\n"
       f"...gene_id={gene_id}\n"
-      f"...regions={0 if regions is None else len(regions)}\n"
+      f"...regions={regions}\n"
       f"...consequence={consequence}\n"
       f"...attrs={attrs}\n"
       f"...memory_budget={memory_budget}\n"
