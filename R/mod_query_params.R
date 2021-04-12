@@ -189,6 +189,7 @@ queryParamsServer <- function(id) {
       message("Assembling query params")
 
       list(
+        genome = tolower(input$genome),
         gene_id = setNames(selected_genes()$ensgene, selected_genes()$symbol),
         regions = selected_regions(),
         consequence = input$consequence,

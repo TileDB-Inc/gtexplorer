@@ -5,6 +5,7 @@ import tiledb.cloud
 out = tiledb.cloud.udf.exec(
     name = "TileDB-Inc/vcf_annotation_example",
     task_name = "Quokka3QueryRegionTest",
+    genome = "grch37",
     array_uri = "tiledb://TileDB-Inc/vcf-1kg-phase3",
     attrs = ["sample_name", "contig", "pos_start", "pos_end", "query_bed_start", "query_bed_end"],
     gene_id = "ENSG00000149295", # DRD2
@@ -18,6 +19,7 @@ out = tiledb.cloud.udf.exec(
 
 def vcf_annotation_example(
     array_uri=None,
+    genome=None,
     vep_filter=True,
     consequence=None,
     attrs=None,
@@ -42,6 +44,7 @@ def vcf_annotation_example(
     print(
       "Parameters:\n"
       f"...array_uri={array_uri}\n"
+      f"...genome={genome}\n"
       f"...gene_id={gene_id}\n"
       f"...regions={regions}\n"
       f"...consequence={consequence}\n"
@@ -73,7 +76,12 @@ def vcf_annotation_example(
             "query_bed_end",
         ]
 
-    # Varient annotation
+    # Variant annotation
+    vep_table = "tiledb://TileDB-Inc/vepvariantannotation"
+    if genome == "grch38":
+        vep_table = vep_table + "_grch38"
+
+
     vep_query = """SELECT vepvariantannotation.chrom,
       vepvariantannotation.gene_id,
       vepvariantannotation.pos_start,
@@ -83,8 +91,8 @@ def vcf_annotation_example(
       vepvariantannotation.consequence,
       vepvariantannotation.codons,
       vepvariantannotation.aminoacids
-    FROM `tiledb://TileDB-Inc/vepvariantannotation` vepvariantannotation
-    """
+    FROM `{}` vepvariantannotation
+    """.format(vep_table)
 
     if isinstance(gene_id, str):
         vep_query += f" WHERE gene_id = '{gene_id}'"
