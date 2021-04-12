@@ -1,3 +1,4 @@
+# options(repos = BiocManager::repositories())
 # rsconnect::deployApp(
 #   appName = "quokka3",
 #   appFiles = c(

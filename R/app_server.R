@@ -21,10 +21,16 @@ app_server <- function(input, output, session) {
       message("Submitting UDF to TileDB Cloud")
       cli <- TileDBClient$new()
 
+      udf_start <- Sys.time()
       results <- cli$submit_udf(
         namespace = "TileDB-Inc",
         name = "TileDB-Inc/vcf_annotation_example",
         args = c(query_params(), config_params())
+      )
+      udf_stop <- Sys.time()
+      udf_time <- difftime(udf_stop, udf_start, units = "secs")
+      message(
+        glue::glue("UDF took {round(udf_time, 1)} sec")
       )
       return(jsonlite::fromJSON(results)$data)
     }
@@ -33,10 +39,6 @@ app_server <- function(input, output, session) {
   tbl_results <- reactive({
     req(query_results())
     dplyr::tibble(query_results()) %>%
-
-      # drop duplicates caused by variants appearing in multiple txs/exons
-      dplyr::select(-transcript_id, -exon_number) %>%
-      dplyr::distinct() %>%
 
       # add sample annotations
       dplyr::inner_join(tbl_samples, by = c(sample_name = "sampleuid")) %>%
@@ -53,7 +55,7 @@ app_server <- function(input, output, session) {
         contig,
         pos_start,
         pos_end,
-        gene_name,
+        # gene_name,
         ref,
         alt,
         consequence,
