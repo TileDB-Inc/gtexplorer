@@ -8,6 +8,7 @@ out = tiledb.cloud.udf.exec(
     array_uri = "tiledb://TileDB-Inc/vcf-1kg-phase3",
     attrs = ["sample_name", "contig", "pos_start", "pos_end", "query_bed_start", "query_bed_end"],
     gene_id = "ENSG00000149295", # DRD2
+    vep_filter = True,
     consequence = "missense_variant",
     vcf_parallelization = 5,
     samples = ["HG00100","HG00125","HG00127","HG00130","HG00137","HG00154","HG00235","HG00236","HG00254","HG00257","HG00262"],
@@ -17,6 +18,7 @@ out = tiledb.cloud.udf.exec(
 
 def vcf_annotation_example(
     array_uri=None,
+    vep_filter=True,
     consequence=None,
     attrs=None,
     memory_budget=512,
@@ -43,6 +45,7 @@ def vcf_annotation_example(
       f"...gene_id={gene_id}\n"
       f"...regions={regions}\n"
       f"...consequence={consequence}\n"
+      f"...vep_filter={vep_filter}\n"
       f"...attrs={attrs}\n"
       f"...memory_budget={memory_budget}\n"
       f"...vcf_parallelization={vcf_parallelization}\n"
@@ -185,9 +188,13 @@ def vcf_annotation_example(
         delayed_reads
     )
 
-    delayed_results = Delayed(annotate_variants, name="Annotate_Variants", local=True)(
-        delayed_vcf_results, delayed_veps
-    )
+    # skip variant annotation step if vep filtering is disabled
+    if vep_filter:
+        delayed_results = Delayed(annotate_variants, name="Annotate_Variants", local=True)(
+            delayed_vcf_results, delayed_veps
+        )
+        results = delayed_results.compute()
+    else:
+        results = delayed_vcf_results.compute().to_pandas()
 
-    results = delayed_results.compute()
     return results.to_json(orient = "table", index = False)
