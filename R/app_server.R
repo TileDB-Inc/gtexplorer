@@ -22,6 +22,11 @@ app_server <- function(input, output, session) {
       cli <- TileDBClient$new()
       params <- c(query_params(), config_params())
 
+      # update chr labels for the phase3 and NYGC 1KG datasets
+      if (grepl("nygc", params$array_uri)) {
+        params$regions <- paste0("chr", params$regions)
+      }
+
       udf_start <- Sys.time()
       results <- cli$submit_udf(
         namespace = "TileDB-Inc",
@@ -77,7 +82,7 @@ app_server <- function(input, output, session) {
 
   output$table_results <- DT::renderDataTable({
     req(tbl_results())
-    message("Converting results to a table")
+    message("Rendering results table")
 
     DT::datatable(
       tbl_results(),

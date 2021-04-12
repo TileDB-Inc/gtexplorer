@@ -145,6 +145,9 @@ def vcf_annotation_example(
         # The VCF bed start is zero indexed but ensembl is 1 index, so shift by one
         vcf_data["query_bed_start"] += 1
 
+        # Strip 'chr' prefix from contigs to match style used in VEP table
+        vcf_data["contig"] = vcf_data.contig.str.lstrip("chr")
+
         # Add VEP data
         results = vcf_data.merge(
             vep_df.rename(columns={"chrom": "contig"}).astype({"contig": "str"}),

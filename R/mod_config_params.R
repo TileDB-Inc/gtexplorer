@@ -4,11 +4,13 @@ configParamsUI <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
 
-    shiny::textInput(
+    shiny::selectInput(
       inputId = ns("uri_vcf"),
       label = "TileDB-VCF Dataset URI",
-      value = "tiledb://TileDB-Inc/vcf-1kg-phase3",
-      placeholder = "e.g., tiledb://TileDB-Inc/vcf-1kg-phase3"
+      choices = c(
+        "tiledb://TileDB-Inc/vcf-1kg-phase3",
+        "tiledb://TileDB-Inc/vcf-1kg-nygc"
+      )
     ),
 
     shiny::sliderInput(
