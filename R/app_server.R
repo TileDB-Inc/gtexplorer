@@ -20,12 +20,13 @@ app_server <- function(input, output, session) {
     } else {
       message("Submitting UDF to TileDB Cloud")
       cli <- TileDBClient$new()
+      params <- c(query_params(), config_params())
 
       udf_start <- Sys.time()
       results <- cli$submit_udf(
         namespace = "TileDB-Inc",
         name = "TileDB-Inc/vcf_annotation_example",
-        args = c(query_params(), config_params())
+        args = params
       )
       udf_stop <- Sys.time()
       udf_time <- difftime(udf_stop, udf_start, units = "secs")
@@ -38,14 +39,16 @@ app_server <- function(input, output, session) {
 
   tbl_results <- reactive({
     shiny::req(query_results())
+    message("Wrangling results")
+
+    # gene lookup table
+    genes <- shiny::isolate(query_params()$gene_id)
 
     query_results() %>%
 
       # add gene symbol
       dplyr::mutate(
-        gene_name = names(query_params()$gene_id)[
-          match(gene_id, query_params()$gene_id)
-        ]
+        gene_name = names(genes)[match(gene_id, genes)]
       ) %>%
 
       # add sample annotations
