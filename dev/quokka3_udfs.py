@@ -72,6 +72,7 @@ def vcf_annotation_example(
 
     # Varient annotation
     vep_query = """SELECT vepvariantannotation.chrom,
+      vepvariantannotation.gene_id,
       vepvariantannotation.pos_start,
       vepvariantannotation.pos_end,
       vepvariantannotation.ref,

@@ -187,8 +187,9 @@ queryParamsServer <- function(id) {
 
     shiny::reactive({
       message("Assembling query params")
+
       list(
-        gene_id = selected_genes()$ensgene,
+        gene_id = setNames(selected_genes()$ensgene, selected_genes()$symbol),
         regions = selected_regions(),
         consequence = input$consequence,
         attrs = list(

@@ -37,8 +37,16 @@ app_server <- function(input, output, session) {
   })
 
   tbl_results <- reactive({
-    req(query_results())
-    dplyr::tibble(query_results()) %>%
+    shiny::req(query_results())
+
+    query_results() %>%
+
+      # add gene symbol
+      dplyr::mutate(
+        gene_name = names(query_params()$gene_id)[
+          match(gene_id, query_params()$gene_id)
+        ]
+      ) %>%
 
       # add sample annotations
       dplyr::inner_join(tbl_samples, by = c(sample_name = "sampleuid")) %>%
@@ -55,7 +63,7 @@ app_server <- function(input, output, session) {
         contig,
         pos_start,
         pos_end,
-        # gene_name,
+        gene_name,
         ref,
         alt,
         consequence,
