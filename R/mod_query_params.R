@@ -52,7 +52,7 @@ queryParamsServer <- function(id) {
 
       # updating server-side selection requires passing the choices again
       shiny::updateSelectizeInput(session, "gene",
-        selected = "DRD2",
+        selected = "SNORA1",
         server = TRUE,
         choices = all_genes()
       )
