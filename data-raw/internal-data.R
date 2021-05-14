@@ -1,10 +1,9 @@
 # Create internal data objects required for the UI
 
 library(GenomeInfoDb)
-library(tiledb)
+library(rtracklayer)
 library(usethis)
 library(purrr)
-library(stringr)
 
 # Genome Chromosomes ------------------------------------------------------
 # Create tables with chromosome lengths for each supported genome version
@@ -20,77 +19,25 @@ supported_genomes <- genomes %>%
   map(GenomeInfoDb::seqlengths)
 
 
-# 1KG Sample Metadata -----------------------------------------------------
-samples_array <- tiledb::tiledb_array(
-  uri = "s3://genomic-datasets/biological-databases/data/tables/sample",
-  as.data.frame = TRUE,
-  is.sparse = FALSE,
-  attrs = c("sampleuid", "pop", "super_pop", "gender")
+# gencode gene annotations ------------------------------------------------
+
+gtf <- rtracklayer::import(
+  "https://storage.googleapis.com/gtex_analysis_v8/reference/gencode.v26.GRCh38.genes.gtf"
 )
 
-tbl_samples <- subset(
-  samples_array[],
-  select = -`__tiledb_rows`
-)
-
-# Synthetic pairings of sample IDs and HPOs -------------------------------
-samplehpopair_array <- tiledb::tiledb_array(
-  uri = "s3://genomic-datasets/biological-databases/data/tables/samplehpopair",
-  as.data.frame = TRUE,
-  is.sparse = FALSE
-)
-
-tbl_samplehpopair <- subset(samplehpopair_array[], select = -`__tiledb_rows`)
-
-# Human Phenotype Ontology data -------------------------------------------
-# Create a character vector of HPO IDs indexed by their term names
-
-hpoterms_array <- tiledb::tiledb_array(
-  uri = "s3://genomic-datasets/biological-databases/data/tables/hpoterms",
-  as.data.frame = TRUE,
-  is.sparse = FALSE,
-  attrs = c("hpoid", "hponame")
-)
-
-tbl_hpoterms <- subset(hpoterms_array[], select = -`__tiledb_rows`)
-
-# filter for terms actually assigned to samples
-stopifnot(anyDuplicated(tbl_hpoterms$hponame) == 0)
-stopifnot(anyDuplicated(tbl_hpoterms$hpoid) == 0)
-
-tbl_hpoterms <- subset(
-  tbl_hpoterms,
-  hponame != "All" & hpoid %in% unique(tbl_samplehpopair$hpoid)
-)
-
-tbl_hpoterms <- tbl_hpoterms[order(tbl_hpoterms$hponame), ]
-
-
-# VEP Consequences --------------------------------------------------------
-# vep_array <- tiledb::tiledb_array(
-#   uri = "s3://genomic-datasets/biological-databases/data/tables/vepvariantannotation",
-#   as.data.frame = TRUE,
-#   is.sparse = TRUE,
-#   attrs = "consequence"
-# )
-
-# tbl_veps <- vep_array[]
-
-tbl_veps <- readr::read_csv(
-  "/Users/aaronwolen/Documents/tiledb/projects/biological-databases/data/tables/public.vepvariantannotation.csv.gz"
-)
-
-vep_consequences <- str_subset(unique(tbl_veps$consequence), fixed("&"), negate = TRUE)
+tbl_genes <- gtf %>%
+  as.data.frame() %>%
+  subset(
+    type == "gene",
+    select = c("gene_id", "gene_name")
+  )
 
 
 # export ------------------------------------------------------------------
 
 usethis::use_data(
-  tbl_hpoterms,
-  tbl_samplehpopair,
-  tbl_samples,
+  tbl_genes,
   supported_genomes,
-  vep_consequences,
   internal = TRUE,
   overwrite = TRUE
 )
