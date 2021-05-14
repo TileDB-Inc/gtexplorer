@@ -1,26 +1,13 @@
 # Create internal data objects required for the UI
 
-library(GenomeInfoDb)
 library(rtracklayer)
 library(readr)
 library(usethis)
 library(purrr)
 
-# Genome Chromosomes ------------------------------------------------------
-# Create tables with chromosome lengths for each supported genome version
-# names(GenomeInfoDb:::SUPPORTED_UCSC_GENOMES)
-
-genomes <- c(
-  grch37 = "hg19",
-  grch38 = "hg38"
-)
-
-supported_genomes <- genomes %>%
-  map(~ GenomeInfoDb::Seqinfo(genome = .x)) %>%
-  map(GenomeInfoDb::seqlengths)
-
 
 # gencode gene annotations ------------------------------------------------
+# ~200 gene_names are associated with multiple gene_ids
 
 gtf <- rtracklayer::import(
   "https://storage.googleapis.com/gtex_analysis_v8/reference/gencode.v26.GRCh38.genes.gtf"
@@ -54,7 +41,6 @@ names(tbl_samples)[1] <- "sample"
 usethis::use_data(
   tbl_samples,
   tbl_genes,
-  supported_genomes,
   internal = TRUE,
   overwrite = TRUE
 )
