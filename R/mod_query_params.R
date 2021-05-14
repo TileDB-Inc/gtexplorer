@@ -48,12 +48,6 @@ queryParamsServer <- function(id) {
       )
     })
 
-    selected_genes <- shiny::reactive({
-      shiny::req(input$gene)
-      message("Selecting genes from table of all genes")
-      tbl_genes$gene_id[tbl_genes$gene_name == input$gene]
-    })
-
     shiny::observeEvent(input$fill_example, {
 
       # updating server-side selection requires passing the choices again
@@ -67,12 +61,9 @@ queryParamsServer <- function(id) {
     shiny::observeEvent(input$reset, shinyjs::reset(id = "setup"))
 
     shiny::reactive({
-      req(input$gene)
-      message("Assembling query params")
-      list(
-        gene_name = input$gene,
-        gene_id = selected_genes()
-      )
+      shiny::req(input$gene)
+      message("Selecting genes from table of all genes")
+      tbl_genes[tbl_genes$gene_name == input$gene,]
     })
 
   })

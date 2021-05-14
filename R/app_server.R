@@ -11,46 +11,31 @@
 app_server <- function(input, output, session) {
 
   tdb_genes <- open_array()
-  query_params <- queryParamsServer("params")
+  selected_genes <- queryParamsServer("params")
 
-  tbl_results <- shiny::eventReactive(input$run_query, {
-    if (input$return_example_results) {
-      message("Returning example results")
-      return(example_results)
-    } else {
-      message("Retrieving gene from array")
-      gene_id <- subset(tbl_genes, gene_name == names(query_params()$gene_id))
-      if (nrow(gene_id) > 1) {
-        message(
-          sprintf("%i IDs matched %s", nrow(gene_id), query_params()$gene_id)
-        )
-      }
-      tibble::tibble(tdb_genes[gene_id$gene_id[1],])
-    }
+  output$table_results <- DT::renderDataTable({
+    req(tbl_results())
+    message("Rendering table of selected genes")
+
+    DT::datatable(
+      selected_genes(),
+      style = "bootstrap",
+      selection = "single",
+      extensions = c("Responsive")
+    )
   })
 
-  # output$table_results <- DT::renderDataTable({
-  #   req(tbl_results())
-  #   message("Rendering results table")
-  #
-  #   DT::datatable(
-  #     tbl_results(),
-  #     style = "bootstrap",
-  #     selection = "single",
-  #     extensions = c("Responsive"),
-  #     callback = DT::JS("$('div.dwnld').append($('#download_results'));"),
-  #     options = list(
-  #       dom = 'B<"dwnld">frtip'
-  #     )
-  #   )
-  # })
-  #
-  # output$download_results <- shiny::downloadHandler(
-  #   filename = "tiledb-quokka-export.csv",
-  #   content = function(file) {
-  #     readr::write_csv(tbl_results(), file)
-  #   }
-  # )
+  tbl_results <- shiny::eventReactive(input$run_query, {
+    message("Querying array")
+    tdb_genes[selected_genes()$gene_id,]
+  })
+
+  output$download_results <- shiny::downloadHandler(
+    filename = "tiledb-quokka-export.csv",
+    content = function(file) {
+      readr::write_csv(tbl_results(), file)
+    }
+  )
 
   output$plot_results <- shiny::renderPlot({
     req(tbl_results())
@@ -63,7 +48,7 @@ app_server <- function(input, output, session) {
       geom_boxplot(aes(fill = SMTS), show.legend = FALSE) +
       scale_y_continuous("TPM") +
       ggtitle(
-        label = sprintf("Gene expression for %s", names(query_params()$gene_id))
+        label = sprintf("Gene expression for %s", unique(isolate(selected_genes()$gene_name)))
       ) +
       theme_bw(12) +
       theme(

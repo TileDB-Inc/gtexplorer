@@ -62,6 +62,15 @@ app_ui <- function(request) {
         fluidRow(
           box(
             shinycssloaders::withSpinner(
+              DT::DTOutput("table_results")
+            ),
+            width = 12
+          )
+        ),
+
+        fluidRow(
+          box(
+            shinycssloaders::withSpinner(
               shiny::plotOutput("plot_results")
             ),
             width = 12
