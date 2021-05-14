@@ -15,6 +15,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports:
     shiny (>= 1.6.0),
+    tiledb,
     dplyr,
     purrr,
     jsonlite,
@@ -35,7 +36,8 @@ Imports:
     GenomicAlignments,
     GenomicFeatures,
     TxDb.Hsapiens.UCSC.hg19.knownGene,
-    TxDb.Hsapiens.UCSC.hg38.knownGene
+    TxDb.Hsapiens.UCSC.hg38.knownGene,
+    ggplot2
 Remotes:
   stephenturner/annotables
 Depends:

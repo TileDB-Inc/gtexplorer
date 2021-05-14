@@ -53,21 +53,21 @@ app_ui <- function(request) {
       ),
 
       body = dashboardBody(
-        fluidRow(
-          valueBoxOutput("samples"),
-          valueBoxOutput("variants"),
-          valueBoxOutput("consequences")
-        ),
+        # fluidRow(
+        #   valueBoxOutput("samples"),
+        #   valueBoxOutput("variants"),
+        #   valueBoxOutput("consequences")
+        # ),
 
         fluidRow(
           box(
-            shiny::downloadButton("download_results", "Download"),
             shinycssloaders::withSpinner(
-              DT::dataTableOutput("table_results")
+              shiny::plotOutput("plot_results")
             ),
             width = 12
           )
         )
+
       )
     )
 }

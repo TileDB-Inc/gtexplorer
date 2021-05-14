@@ -24,50 +24,6 @@ queryParamsUI <- function(id) {
       )
     ),
 
-    shiny::h4("Filter Samples"),
-    # sample metadata filters
-    purrr::imap(
-      list(Gender = "gender", Population = "pop"),
-      ~ shiny::selectizeInput(
-        inputId = ns(.x),
-        label = .y,
-        multiple = FALSE,
-        choices = c("Any", unique(tbl_samples[[.x]]))
-      )
-    ),
-
-    shiny::selectizeInput(
-      inputId = ns("hpo"),
-      label = "HPO Term",
-      choices = setNames(tbl_hpoterms$hpoid, tbl_hpoterms$hponame),
-      multiple = TRUE,
-      options = list(
-        # placeholder = "Enter HPO Term",
-        maxItems = 3,
-        plugins = list(
-          "remove_button"
-        )
-      )
-    ),
-
-
-    shiny::h4("Variant Filters"),
-    # shiny::checkboxInput(
-    #   inputId = ns("coding_only"),
-    #   label = "Restrict to coding changes",
-    #   value = TRUE
-    # ),
-    shiny::selectizeInput(
-      inputId = ns("consequence"),
-      label = "VEP Consequence",
-      choices = vep_consequences,
-      multiple = TRUE,
-      options = list(
-        maxItems = 3,
-        plugins = list("remove_button")
-      )
-    ),
-
     shiny::fluidRow(
       shiny::column(
         width = 4,
@@ -130,50 +86,7 @@ queryParamsServer <- function(id) {
       all_genes()[all_genes()$ensgene %in% input$gene, ]
     })
 
-    selected_regions <- reactive({
-      req(selected_genes())
-      gene_filter <- list(gene_id = selected_genes()$entrez)
-      regions <- as.data.frame(
-        GenomicFeatures::exons(txdb(), filter = gene_filter)
-      )
-      regions$seqnames <- stringr::str_remove(regions$seqnames, "chr")
-      glue::glue_data(as.data.frame(regions), "{seqnames}:{start}-{end}")
-    })
-
-    selected_samples <- shiny::reactive({
-      message(glue::glue("Filtering samples"))
-
-      if (input$pop == "Any" && input$gender == "Any" && is.null(input$hpo)) {
-        message("No sample filtering parameters set")
-        return(NULL)
-      }
-
-      index_pop <- index_gender <- rep(TRUE, nrow(tbl_samples))
-      if (input$pop != "Any")
-        index_pop <- tbl_samples$pop == input$pop
-      if (input$gender != "Any")
-        index_gender <- tbl_samples$gender == input$gender
-
-      samples <- tbl_samples[index_pop & index_gender, "sampleuid"]
-      message(glue::glue("Selected {length(samples)} metadata samples"))
-
-      if (!is.null(input$hpo)) {
-        message(glue::glue("Filtering samples for HPO: {input$hpo}"))
-        hpo_samples <- tbl_samplehpopair$sampleuid[
-          tbl_samplehpopair$hpoid %in% input$hpo
-        ]
-        message(glue::glue("Selected {length(samples)} hpo samples"))
-        samples <- intersect(samples, hpo_samples)
-        message(glue::glue("{length(samples)} samples in common"))
-      }
-      samples
-    })
-
     shiny::observeEvent(input$fill_example, {
-      shiny::updateSelectizeInput(session, "pop", selected = "GBR")
-      shiny::updateSelectizeInput(session, "gender", selected = "female")
-      shiny::updateSelectizeInput(session, "consequence", selected = "missense_variant")
-      shiny::updateSelectizeInput(session, "hpo", selected = "HP:0020137")
 
       # updating server-side selection requires passing the choices again
       shiny::updateSelectizeInput(session, "gene",
@@ -190,19 +103,7 @@ queryParamsServer <- function(id) {
 
       list(
         genome = tolower(input$genome),
-        gene_id = setNames(selected_genes()$ensgene, selected_genes()$symbol),
-        regions = selected_regions(),
-        consequence = input$consequence,
-        attrs = list(
-          "sample_name",
-          "contig",
-          "pos_start",
-          "pos_end",
-          # "fmt_GT",
-          "query_bed_start",
-          "query_bed_end"
-        ),
-        samples = selected_samples()
+        gene_id = setNames(selected_genes()$ensgene, selected_genes()$symbol)
       )
     })
 
