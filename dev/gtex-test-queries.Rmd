@@ -1,0 +1,113 @@
+---
+title: "GTEx Test Queries"
+author: "Aaron Wolen"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(tibble)
+library(tiledb)
+
+tiledb_get_stats <- function() {
+  statfile <- tempfile()
+  tiledb::tiledb_stats_dump(statfile)
+  paste0(readLines(statfile), collapse = "\n")
+}
+```
+
+## Data
+
+Gene-level TPMs for GTEx RNA-seq data.
+
+```{r variables}
+array_uri <- "s3://genomic-datasets/biological-databases/data/tables/gtex-analysis-rnaseqc-gene-tpm"
+gene_id <- "ENSG00000227232.5"
+sample_id <- "GTEX-S7PM-0526-SM-3NM92"
+```
+
+Sample annotations
+
+```{r}
+df_samples = readr::read_tsv("https://storage.googleapis.com/gtex_analysis_v8/annotations/GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt")
+
+sample_group <- subset(df_samples, SMTS == "Adipose Tissue")$SAMPID
+
+df_samples
+```
+
+
+## Array opening
+
+You can also embed plots, for example:
+
+```{r open-array}
+tiledb_stats_enable()
+
+tdb_genes <- tiledb::tiledb_array(
+  array_uri,
+  is.sparse = TRUE,
+  attrs = "tpm",
+  as.data.frame = TRUE
+)
+```
+
+```{r open-array-stats, echo=FALSE}
+cat(tiledb_get_stats())
+```
+
+## Queries
+
+### 1 gene for 1 sample:
+
+```{r}
+tiledb_stats_reset()
+tibble(tdb_genes[gene_id, sample_id])
+```
+
+```{r echo=FALSE}
+cat(tiledb_get_stats())
+```
+
+### 1 gene across all samples:
+
+```{r}
+tiledb_stats_reset()
+tibble(tdb_genes[gene_id,])
+```
+
+```{r echo=FALSE}
+cat(tiledb_get_stats())
+```
+
+### 1 gene across a subset of `r length(sample_group)` samples:
+
+```{r}
+tiledb_stats_reset()
+tibble(tdb_genes[gene_id, sample_group])
+```
+
+```{r echo=FALSE}
+cat(tiledb_get_stats())
+```
+
+### 1 sample across all genes:
+
+```{r eval=FALSE}
+tiledb_stats_reset()
+tbl2 <- tdb_genes[,sample_id]
+print(tiledb.stats_dump())
+```
+
+```{r echo=FALSE, eval=FALSE}
+cat(tiledb_get_stats())
+```
+
+## Session
+
+```{r}
+sessioninfo::session_info()
+```
+
