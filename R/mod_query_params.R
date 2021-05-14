@@ -15,10 +15,6 @@ queryParamsUI <- function(id) {
     shiny::fluidRow(
       shiny::column(
         width = 4,
-        shiny::actionButton(ns("fill_example"), "Example Query")
-      ),
-      shiny::column(
-        width = 4,
         shiny::actionButton(ns("reset"), "Reset Inputs", icon = icon("undo"))
       )
     )
@@ -43,18 +39,8 @@ queryParamsServer <- function(id) {
         session,
         inputId = "gene",
         choices = all_genes(),
-        selected = "",
-        server = TRUE
-      )
-    })
-
-    shiny::observeEvent(input$fill_example, {
-
-      # updating server-side selection requires passing the choices again
-      shiny::updateSelectizeInput(session, "gene",
         selected = "SNORA1",
-        server = TRUE,
-        choices = all_genes()
+        server = TRUE
       )
     })
 
