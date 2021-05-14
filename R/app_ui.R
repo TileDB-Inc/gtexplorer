@@ -11,7 +11,7 @@ app_ui <- function(request) {
       shinyjs::useShinyjs(),
       # theme = bslib::bs_theme(primary = "#001f75", version = 3),
       header = dashboardHeader(
-        title = "Quokka TileDB",
+        title = "TileDB GTEx Explorer",
         titleWidth = 350
       ),
       sidebar = dashboardSidebar(

@@ -1,6 +1,6 @@
-Package: quokka3
-Title: Quokka3 Frontend
-Description: A shiny-based frontend for the TileDB-backed Quokka database.
+Package: gtexplorer
+Title: GTEx Explorer
+Description: A shiny-based frontend for TileDB-backed GTEx data.
 Version: 0.0.0.9000
 Authors@R:
     person(given = "Aaron",
