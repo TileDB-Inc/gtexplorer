@@ -1,6 +1,6 @@
 # options(repos = BiocManager::repositories())
 # rsconnect::deployApp(
-#   appName = "quokka3",
+#   appName = "gtexplorer",
 #   appFiles = c(
 #     ".Renviron",
 #     "app.R",
@@ -10,9 +10,9 @@
 #     "man",
 #     "NAMESPACE",
 #     "R",
-#     "shiny-quokka.Rproj"
+#     "shiny-gtex.Rproj"
 #   )
 # )
 
 pkgload::load_all(export_all = FALSE, helpers = FALSE, attach_testthat = FALSE)
-quokka3::run_app()
+gtexplorer::run_app()
