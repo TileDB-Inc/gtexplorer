@@ -2,6 +2,7 @@
 
 library(GenomeInfoDb)
 library(rtracklayer)
+library(readr)
 library(usethis)
 library(purrr)
 
@@ -33,9 +34,25 @@ tbl_genes <- gtf %>%
   )
 
 
+# gtex sample annotations -------------------------------------------------
+
+tbl_samples <- readr::read_tsv(
+  "https://storage.googleapis.com/gtex_analysis_v8/annotations/GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt",
+  col_types = cols(SMGTC = col_character())
+)
+
+tbl_samples <- tbl_samples %>%
+  subset(
+    select = c("SAMPID", "SMTS", "SMTSD")
+  )
+
+names(tbl_samples)[1] <- "sample"
+
+
 # export ------------------------------------------------------------------
 
 usethis::use_data(
+  tbl_samples,
   tbl_genes,
   supported_genomes,
   internal = TRUE,
