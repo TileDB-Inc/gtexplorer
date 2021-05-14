@@ -3,6 +3,7 @@
 export("%>%")
 export(TileDBClient)
 export(run_app)
+import(ggplot2)
 import(shiny)
 import(shinydashboard)
 importFrom(DT,JS)
