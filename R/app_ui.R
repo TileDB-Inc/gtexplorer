@@ -14,30 +14,16 @@ app_ui <- function(request) {
         title = "TileDB GTEx Explorer",
         titleWidth = 350
       ),
+
       sidebar = dashboardSidebar(
         width = 350,
         sidebarMenu(
-
-          menuItem(
-            "Configure",
-            configParamsUI("params"),
-            tabName = "configure",
-            icon = icon("cogs"),
-            startExpanded = FALSE
-          ),
-
           menuItem(
             "Query",
             queryParamsUI("params"),
             tabName = "dashboard",
             icon = icon("dashboard"),
             startExpanded = TRUE
-          ),
-
-           menuItem(
-            "Test",
-            shiny::checkboxInput("return_example_results", "Example Results"),
-            icon = icon("bug")
           )
         )
       ),
