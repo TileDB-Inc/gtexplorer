@@ -29,16 +29,6 @@ app_ui <- function(request) {
           menuItem(
             "Query",
             queryParamsUI("params"),
-            shiny::fluidRow(
-              shiny::column(
-                width = 4,
-                shiny::actionButton(
-                  "run_query",
-                  "Run Query",
-                  icon = icon("search")
-                )
-              )
-            ),
             tabName = "dashboard",
             icon = icon("dashboard"),
             startExpanded = TRUE
@@ -62,7 +52,7 @@ app_ui <- function(request) {
         fluidRow(
           box(
             shinycssloaders::withSpinner(
-              DT::DTOutput("table_results")
+              DT::DTOutput("table_genes")
             ),
             width = 12
           )

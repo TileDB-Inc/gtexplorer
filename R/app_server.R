@@ -14,21 +14,32 @@ app_server <- function(input, output, session) {
   tdb_genes <- open_array()
   selected_genes <- queryParamsServer("params")
 
-  output$table_results <- DT::renderDataTable({
-    req(tbl_results())
+
+  output$table_genes <- DT::renderDT({
+    req(selected_genes())
     message("Rendering table of selected genes")
 
     DT::datatable(
       selected_genes(),
       style = "bootstrap",
-      selection = "single",
-      extensions = c("Responsive")
+      selection = list(mode = "single", selected = 1, target = "row"),
+      extensions = c("Responsive"),
+      options = list(
+        stateSave = TRUE
+      )
     )
   })
 
-  tbl_results <- shiny::eventReactive(input$run_query, {
-    message("Querying array")
-    tdb_genes[selected_genes()$gene_id,]
+  selected_gene_id <- reactive({
+    req(input$table_genes_rows_selected)
+    message("Updating selected gene_id from table")
+    selected_genes()$gene_id[input$table_genes_rows_selected]
+  })
+
+  tbl_results <- shiny::reactive({
+    req(selected_gene_id())
+    message(sprintf("Querying array for %s", selected_gene_id()))
+    tdb_genes[selected_gene_id(),]
   })
 
   output$download_results <- shiny::downloadHandler(
