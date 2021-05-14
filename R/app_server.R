@@ -42,16 +42,16 @@ app_server <- function(input, output, session) {
     tdb_genes[selected_gene_id(),]
   })
 
-  output$download_results <- shiny::downloadHandler(
-    filename = "tiledb-quokka-export.csv",
-    content = function(file) {
-      readr::write_csv(tbl_results(), file)
-    }
-  )
+  # output$download_results <- shiny::downloadHandler(
+  #   filename = "tiledb-quokka-export.csv",
+  #   content = function(file) {
+  #     readr::write_csv(tbl_results(), file)
+  #   }
+  # )
 
   output$plot_results <- shiny::renderPlot({
     req(tbl_results())
-    message("Rendering results plot")
+    message("Rendering results plot\n")
 
     tbl_results() %>%
       dplyr::inner_join(tbl_samples, by = "sample") %>%
@@ -60,7 +60,11 @@ app_server <- function(input, output, session) {
       geom_boxplot(aes(fill = SMTS), show.legend = FALSE) +
       scale_y_continuous("TPM") +
       ggtitle(
-        label = sprintf("Gene expression for %s", unique(isolate(selected_genes()$gene_name)))
+        label = sprintf(
+          "Gene expression for %s (%s)",
+          unique(isolate(selected_genes()$gene_name)),
+          isolate(selected_gene_id())
+        )
       ) +
       theme_bw(12) +
       theme(
