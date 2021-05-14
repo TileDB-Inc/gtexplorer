@@ -9,13 +9,7 @@ queryParamsUI <- function(id) {
       inputId = ns("gene"),
       label = "Gene Symbol",
       choices = NULL,
-      multiple = TRUE,
-      options = list(
-        maxItems = 3,
-        plugins = list(
-          "remove_button"
-        )
-      )
+      multiple = FALSE
     ),
 
     shiny::fluidRow(
