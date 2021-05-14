@@ -19,7 +19,6 @@ Imports:
     dplyr,
     purrr,
     jsonlite,
-    annotables,
     glue,
     utils,
     pkgload,
@@ -33,10 +32,6 @@ Imports:
     shinyjs,
     magrittr,
     shinydashboard,
-    GenomicAlignments,
-    GenomicFeatures,
-    TxDb.Hsapiens.UCSC.hg19.knownGene,
-    TxDb.Hsapiens.UCSC.hg38.knownGene,
     ggplot2
 Remotes:
   stephenturner/annotables
