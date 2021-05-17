@@ -22,7 +22,15 @@ build_boxplot <- function(data) {
     y = ~tpm,
     color = ~SMTS,
     type = "box",
-    colors = tissue_colors
+    colors = tissue_colors,
+    boxpoints = "outliers",
+    hoveron = "boxes",
+    jitter = 0.75,
+    marker = list(
+      # color = "gray",
+      size = 4,
+      opacity = 0.5
+    )
   ) %>%
   plotly::layout(
     showlegend = FALSE,
