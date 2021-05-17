@@ -48,7 +48,7 @@ queryParamsServer <- function(id) {
 
     shiny::reactive({
       shiny::req(input$gene)
-      message("Selecting genes from table of all genes")
+      message(sprintf("Filtering table of all genes for %s", input$gene))
       tbl_genes[tbl_genes$gene_name == input$gene,]
     })
 
