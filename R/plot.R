@@ -30,6 +30,9 @@ build_plot <- function(data) {
     xaxis = list(
       title = "",
       tickangle = 45
+    ),
+    yaxis = list(
+      rangemode = "tozero"
     )
   )
 
