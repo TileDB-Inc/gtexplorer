@@ -1,0 +1,36 @@
+#' Build plot
+#' @param data data.frame containing columns: SMTS, SMTSD, and tpm
+#' @examples
+#' tdb_genes <- open_array()
+#' tbl_results <- tbd_genes["ENSG00000202059.1",]
+#' tbl_results <- merge(tbl_results, tbl_samples, by = "sample")
+#' build_plot(tbl_results)
+#' @importFrom plotly plot_ly layout
+#' @importFrom scales dscale hue_pal
+
+#' @noRd
+build_plot <- function(data) {
+  tissues <- sort(unique(data$SMTS))
+  tissue_colors  <- scales::dscale(
+    tissues,
+    palette = scales::hue_pal(l = 70)
+  )
+
+  plotly::plot_ly(
+    data = data,
+    x = ~SMTSD,
+    y = ~tpm,
+    color = ~SMTS,
+    type = "box",
+    colors = tissue_colors
+  ) %>%
+  plotly::layout(
+    showlegend = FALSE,
+    margin = list(b = 200),
+    xaxis = list(
+      title = "",
+      tickangle = 45
+    )
+  )
+
+}

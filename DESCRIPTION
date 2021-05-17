@@ -26,7 +26,8 @@ Imports:
     shinyjs,
     magrittr,
     shinydashboard,
-    ggplot2
+    scales,
+    plotly
 Remotes:
   stephenturner/annotables
 Depends:

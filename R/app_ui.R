@@ -47,7 +47,7 @@ app_ui <- function(request) {
         fluidRow(
           box(
             shinycssloaders::withSpinner(
-              shiny::plotOutput("plot_results")
+              plotly::plotlyOutput("plot_results")
             ),
             width = 12
           )

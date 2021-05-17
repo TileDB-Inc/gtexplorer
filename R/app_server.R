@@ -51,28 +51,12 @@ app_server <- function(input, output, session) {
   #   }
   # )
 
-  output$plot_results <- shiny::renderPlot({
+  output$plot_results <- plotly::renderPlotly({
     req(tbl_results())
     message("Rendering results plot\n")
-
-    tbl_results() %>%
-      dplyr::inner_join(tbl_samples, by = "sample") %>%
-    ggplot() +
-      aes(SMTS, tpm) +
-      geom_boxplot(aes(fill = SMTS), show.legend = FALSE) +
-      scale_y_continuous("TPM") +
-      ggtitle(
-        label = sprintf(
-          "Gene expression for %s (%s)",
-          unique(isolate(selected_genes()$gene_name)),
-          isolate(selected_gene_id())
-        )
-      ) +
-      theme_bw(12) +
-      theme(
-        axis.title.x = element_blank(),
-        axis.text.x = element_text(angle = -45, hjust = 0, vjust = 1)
-      )
+    build_plot(
+      dplyr::inner_join(tbl_results(), tbl_samples, by = "sample")
+    )
   })
 
 }
