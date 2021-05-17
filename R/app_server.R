@@ -54,7 +54,7 @@ app_server <- function(input, output, session) {
   output$plot_results <- plotly::renderPlotly({
     req(tbl_results())
     message("Rendering results plot\n")
-    build_plot(
+    build_boxplot(
       dplyr::inner_join(tbl_results(), tbl_samples, by = "sample")
     )
   })

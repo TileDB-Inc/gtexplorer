@@ -9,7 +9,7 @@
 #' @importFrom scales dscale hue_pal
 
 #' @noRd
-build_plot <- function(data) {
+build_boxplot <- function(data) {
   tissues <- sort(unique(data$SMTS))
   tissue_colors  <- scales::dscale(
     tissues,
