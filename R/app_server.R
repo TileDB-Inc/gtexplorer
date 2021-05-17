@@ -28,9 +28,13 @@ app_server <- function(input, output, session) {
     )
   })
 
-  selected_gene_id <- reactive({
-    req(input$table_genes_rows_selected)
-    message("Updating selected gene_id from table")
+  selected_gene_id <- eventReactive(input$table_genes_rows_selected, {
+    message(
+      sprintf(
+        "Selecting gene_id from row %i of table",
+        input$table_genes_rows_selected
+      )
+    )
     selected_genes()$gene_id[input$table_genes_rows_selected]
   })
 
