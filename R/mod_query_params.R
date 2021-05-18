@@ -91,6 +91,7 @@ queryParamsApp <- function() {
   server <- function(input, output, session) {
     query_params <- queryParamsServer("params")
     output$out <- shiny::renderPrint({
+      req(query_params())
       message("Submitting")
       query_params()
     })
