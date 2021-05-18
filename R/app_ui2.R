@@ -3,10 +3,7 @@ app_ui_navbar <- function(request) {
     title = "gtexplorer",
     windowTitle = "gtexplorer",
     fluid = TRUE,
-    theme = bslib::bs_theme(
-      version = 4,
-      primary = "#3190ff"
-    ),
+    theme = gtexplorer_theme(),
     id = "tabs",
 
     shiny::tabPanel(
@@ -21,8 +18,8 @@ app_ui_navbar <- function(request) {
           style = "width: 100%; position: relative;z-index:-9;",
           div(
             # style = "padding-top:20px;",
-            h1("TileDB", class = "center"),
-            h3("GTEx Explorer", class = "center")
+            h1("TileDB", class = "font-weight-bold"),
+            h3("GTEx Explorer", class = "font-weight-light", style = "margin-top: 0em;")
           )
         ),
 
