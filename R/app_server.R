@@ -1,10 +1,9 @@
 #' Server-side logic
 #'
 #' @param input,output,session Internal parameters for {shiny}
+#' @importFrom DT datatable renderDT JS
 #' @import shiny
-#' @import ggplot2
-#' @importFrom dplyr distinct
-#' @importFrom DT datatable renderDataTable JS
+#' @importFrom dplyr inner_join
 #' @noRd
 
 app_server <- function(input, output, session) {

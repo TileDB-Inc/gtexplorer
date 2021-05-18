@@ -14,20 +14,18 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports:
+    DT,
     shiny (>= 1.6.0),
     tiledb,
-    dplyr,
-    purrr,
     utils,
     pkgload,
-    DT,
     shinycssloaders,
     bslib,
     shinyjs,
-    magrittr,
     shinydashboard,
     scales,
-    plotly
+    plotly,
+    dplyr
 Remotes:
   stephenturner/annotables
 Depends:

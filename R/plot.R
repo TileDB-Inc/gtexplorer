@@ -16,7 +16,7 @@ build_boxplot <- function(data) {
     palette = scales::hue_pal(l = 70)
   )
 
-  plotly::plot_ly(
+  bp <- plotly::plot_ly(
     data = data,
     x = ~SMTSD,
     y = ~tpm,
@@ -31,8 +31,10 @@ build_boxplot <- function(data) {
       size = 4,
       opacity = 0.5
     )
-  ) %>%
+  )
+
   plotly::layout(
+    p = bp,
     showlegend = FALSE,
     margin = list(b = 200),
     xaxis = list(
@@ -43,5 +45,4 @@ build_boxplot <- function(data) {
       rangemode = "tozero"
     )
   )
-
 }

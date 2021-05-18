@@ -1,9 +1,10 @@
 #' Application User-Interface
 #'
 #' @param request Internal parameter for `{shiny}`.
-#' @import shiny shinydashboard
-#' @importFrom DT dataTableOutput
+#' @import shinydashboard
+#' @importFrom DT DTOutput
 #' @importFrom shinycssloaders withSpinner
+#' @importFrom shinyjs useShinyjs
 #' @noRd
 
 app_ui <- function(request) {
