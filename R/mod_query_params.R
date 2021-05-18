@@ -12,7 +12,7 @@ queryParamsUI <- function(id) {
       shiny::column(
         width = 1,
         shiny::br(),
-        shiny::actionButton(ns("opts"), "", icon = icon("plus"))
+        shiny::actionButton(ns("reset"), "", icon = icon("redo"))
       ),
 
       shiny::column(
@@ -30,7 +30,7 @@ queryParamsUI <- function(id) {
       shiny::column(
         width = 2,
         shiny::br(),
-        shiny::actionButton(ns("reset"), "Reset Inputs", icon = icon("undo"), class = "btn btn-primary")
+        shiny::actionButton(ns("search"), "Search", icon = icon("search"), class = "btn btn-primary")
       )
     )
   )
@@ -63,9 +63,17 @@ queryParamsServer <- function(id) {
       )
     })
 
-    shiny::observeEvent(input$reset, shinyjs::reset(id = "setup"))
+    shiny::observeEvent(input$reset, {
+      shiny::updateSelectizeInput(
+        session,
+        inputId = "gene",
+        choices = all_genes(),
+        selected = "SNORA1",
+        server = TRUE
+      )
+    })
 
-    shiny::reactive({
+    shiny::eventReactive(input$search, {
       shiny::req(input$gene)
       message(sprintf("Filtering table of all genes for %s", input$gene))
       tbl_genes[tbl_genes$gene_name == input$gene,]
