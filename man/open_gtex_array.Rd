@@ -19,7 +19,7 @@ open_gtex_array(
 \item{verbose}{Logical, print message with array's location}
 }
 \value{
-
+\code{tiledb_array} object
 }
 \description{
 Open TileDB GTEx Array
