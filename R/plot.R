@@ -1,14 +1,15 @@
-#' Build plot
+#' Build GTEx boxplot
 #' @param data data.frame containing columns: SMTS, SMTSD, and tpm
 #' @examples
+#' \dontrun{
 #' tdb_genes <- open_array()
 #' tbl_results <- tbd_genes["ENSG00000202059.1",]
 #' tbl_results <- merge(tbl_results, tbl_samples, by = "sample")
 #' build_boxplot(tbl_results)
+#' }
 #' @importFrom plotly plot_ly layout
 #' @importFrom scales dscale hue_pal
 
-#' @noRd
 build_boxplot <- function(data) {
   tissues <- sort(unique(data$SMTS))
   tissue_colors  <- scales::dscale(

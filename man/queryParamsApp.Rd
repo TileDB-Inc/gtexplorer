@@ -10,5 +10,7 @@ queryParamsApp()
 Query Parameters Module Test App
 }
 \examples{
-queryParamsApp()
+\dontrun{
+ queryParamsApp()
+}
 }

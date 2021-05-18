@@ -1,5 +1,7 @@
-#' UDF Query Parameters Module
-
+#' UDF Query Parameters Module UI
+#'
+#' @param id ID for module
+#' @noRd
 queryParamsUI <- function(id) {
   ns <- shiny::NS(id)
   shiny::div(
@@ -22,7 +24,12 @@ queryParamsUI <- function(id) {
   )
 }
 
-
+#' UDF Query Parameters Module Server
+#'
+#' @param id ID for module
+#' @returns Filtered version of the `tbl_genes` data.frame with row for each
+#' `gene_id` associated with the selected gene name.
+#' @noRd
 queryParamsServer <- function(id) {
 
   shiny::moduleServer(id, function(input, output, session) {
@@ -59,7 +66,10 @@ queryParamsServer <- function(id) {
 #' Query Parameters Module Test App
 #'
 #' @examples
-#' queryParamsApp()
+#' \dontrun{
+#'  queryParamsApp()
+#' }
+#' @export
 queryParamsApp <- function() {
   ui <- fluidPage(
     shinyjs::useShinyjs(),
