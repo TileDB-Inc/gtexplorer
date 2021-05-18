@@ -6,21 +6,33 @@ queryParamsUI <- function(id) {
   ns <- shiny::NS(id)
   shiny::div(
     id = ns("setup"),
-
-    shiny::selectizeInput(
-      inputId = ns("gene"),
-      label = "Gene Symbol",
-      choices = NULL,
-      multiple = FALSE
-    ),
-
+    # style="display:inline-block;vertical-align:top;",
     shiny::fluidRow(
+
       shiny::column(
-        width = 4,
-        shiny::actionButton(ns("reset"), "Reset Inputs", icon = icon("undo"))
+        width = 1,
+        shiny::br(),
+        shiny::actionButton(ns("opts"), "", icon = icon("plus"))
+      ),
+
+      shiny::column(
+        width = 9,
+        # shiny::br(),
+        shiny::selectizeInput(
+          inputId = ns("gene"),
+          label = "",
+          choices = NULL,
+          multiple = FALSE,
+          width = "100%"
+        )
+      ),
+
+      shiny::column(
+        width = 2,
+        shiny::br(),
+        shiny::actionButton(ns("reset"), "Reset Inputs", icon = icon("undo"), class = "btn btn-primary")
       )
     )
-
   )
 }
 
