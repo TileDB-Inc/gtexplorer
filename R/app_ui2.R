@@ -28,23 +28,7 @@ app_ui_navbar <- function(request) {
 
         queryParamsUI("params"),
         app_ui_results(),
-      ), # div.container
-
-      br(),
-      br(),
-      div(
-        style = "position:fixed;bottom:0px;right:43%;",
-        shiny::fluidRow(
-          p(
-            class = "center",
-            "Visit",
-            a("chrip.sh",
-              href = "https://chirp.sh",
-              target = "_blank"),
-            "for more information."
-          )
-        )
-      ) # div.footer
+      ) # div.container
 
     ) # tabPanel
   ) # navbar page
