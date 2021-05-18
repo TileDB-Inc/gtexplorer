@@ -44,6 +44,10 @@ build_boxplot <- function(data) {
     ),
     yaxis = list(
       rangemode = "tozero"
+    ),
+    font = list(
+      family = "helvetica",
+      size = 12
     )
   )
 }
