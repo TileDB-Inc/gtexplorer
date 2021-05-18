@@ -4,7 +4,7 @@
 #' tdb_genes <- open_array()
 #' tbl_results <- tbd_genes["ENSG00000202059.1",]
 #' tbl_results <- merge(tbl_results, tbl_samples, by = "sample")
-#' build_plot(tbl_results)
+#' build_boxplot(tbl_results)
 #' @importFrom plotly plot_ly layout
 #' @importFrom scales dscale hue_pal
 
