@@ -4,6 +4,7 @@ library(rtracklayer)
 library(readr)
 library(usethis)
 library(purrr)
+library(dplyr)
 
 
 # gencode gene annotations ------------------------------------------------
@@ -15,10 +16,10 @@ gtf <- rtracklayer::import(
 
 tbl_genes <- gtf %>%
   as.data.frame() %>%
-  subset(
-    type == "gene",
-    select = c("gene_id", "gene_name")
-  )
+  filter(type == "gene") %>%
+  select(gene_name, gene_id, chr = seqnames, start, end) %>%
+  arrange(gene_name)
+
 
 
 # gtex sample annotations -------------------------------------------------
