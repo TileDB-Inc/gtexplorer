@@ -22,7 +22,11 @@ app_server <- function(input, output, session) {
       selection = list(mode = "single", selected = 1, target = "row"),
       extensions = c("Responsive"),
       options = list(
-        stateSave = TRUE
+        stateSave = TRUE,
+        searching = FALSE,
+        paging = TRUE,
+        info = FALSE,
+        lengthChange = FALSE
       )
     )
   })
