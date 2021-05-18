@@ -8,7 +8,7 @@
 
 app_server <- function(input, output, session) {
 
-  tdb_genes <- open_array()
+  tdb_genes <- open_gtex_array()
   selected_genes <- queryParamsServer("params")
 
 
