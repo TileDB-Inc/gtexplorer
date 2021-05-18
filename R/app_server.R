@@ -18,7 +18,7 @@ app_server <- function(input, output, session) {
 
     DT::datatable(
       selected_genes(),
-      style = "bootstrap",
+      style = "bootstrap4",
       selection = list(mode = "single", selected = 1, target = "row"),
       extensions = c("Responsive"),
       options = list(
