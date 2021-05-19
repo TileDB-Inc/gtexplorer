@@ -42,6 +42,16 @@ app_server <- function(input, output, session) {
     selected_genes()$gene_id[input$table_genes_rows_selected]
   })
 
+  output$r_snippet <- shiny::renderText({
+    message("Updating R snippet")
+    build_r_snippet(selected_gene_id())
+  })
+
+  output$py_snippet <- shiny::renderText({
+    message("Updating Python snippet")
+    build_py_snippet(selected_gene_id())
+  })
+
   tbl_results <- shiny::reactive({
     req(selected_gene_id())
     message(sprintf("Querying array for %s", selected_gene_id()))
