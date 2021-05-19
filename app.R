@@ -10,6 +10,7 @@
 #     "man",
 #     "NAMESPACE",
 #     "R",
+#     "inst",
 #     "shiny-gtex.Rproj"
 #   )
 # )
