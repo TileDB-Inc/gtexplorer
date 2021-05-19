@@ -1,22 +1,23 @@
-#' Build plot
+#' Build GTEx boxplot
 #' @param data data.frame containing columns: SMTS, SMTSD, and tpm
 #' @examples
-#' tdb_genes <- open_array()
-#' tbl_results <- tbd_genes["ENSG00000202059.1",]
+#' \dontrun{
+#' tdb_genes <- open_gtex_array()
+#' tbl_results <- tdb_genes["ENSG00000202059.1",]
 #' tbl_results <- merge(tbl_results, tbl_samples, by = "sample")
-#' build_plot(tbl_results)
+#' build_boxplot(tbl_results)
+#' }
 #' @importFrom plotly plot_ly layout
 #' @importFrom scales dscale hue_pal
 
-#' @noRd
-build_boxplot <- function(data) {
+build_boxplot <- function(data, title = "Gene Expression") {
   tissues <- sort(unique(data$SMTS))
   tissue_colors  <- scales::dscale(
     tissues,
     palette = scales::hue_pal(l = 70)
   )
 
-  plotly::plot_ly(
+  bp <- plotly::plot_ly(
     data = data,
     x = ~SMTSD,
     y = ~tpm,
@@ -26,13 +27,16 @@ build_boxplot <- function(data) {
     boxpoints = "outliers",
     hoveron = "boxes",
     jitter = 0.75,
+    title = title,
     marker = list(
       # color = "gray",
       size = 4,
       opacity = 0.5
     )
-  ) %>%
+  )
+
   plotly::layout(
+    p = bp,
     showlegend = FALSE,
     margin = list(b = 200),
     xaxis = list(
@@ -41,7 +45,10 @@ build_boxplot <- function(data) {
     ),
     yaxis = list(
       rangemode = "tozero"
+    ),
+    font = list(
+      family = "helvetica",
+      size = 12
     )
   )
-
 }

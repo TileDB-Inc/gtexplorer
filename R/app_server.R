@@ -1,15 +1,14 @@
 #' Server-side logic
 #'
 #' @param input,output,session Internal parameters for {shiny}
+#' @importFrom DT datatable renderDT JS
 #' @import shiny
-#' @import ggplot2
-#' @importFrom dplyr distinct
-#' @importFrom DT datatable renderDataTable JS
+#' @importFrom dplyr inner_join
 #' @noRd
 
 app_server <- function(input, output, session) {
 
-  tdb_genes <- open_array()
+  tdb_genes <- open_gtex_array()
   selected_genes <- queryParamsServer("params")
 
 
@@ -19,11 +18,16 @@ app_server <- function(input, output, session) {
 
     DT::datatable(
       selected_genes(),
-      style = "bootstrap",
+      rownames = FALSE,
+      style = "bootstrap4",
       selection = list(mode = "single", selected = 1, target = "row"),
       extensions = c("Responsive"),
       options = list(
-        stateSave = TRUE
+        stateSave = TRUE,
+        searching = FALSE,
+        paging = TRUE,
+        info = FALSE,
+        lengthChange = FALSE
       )
     )
   })
@@ -55,7 +59,12 @@ app_server <- function(input, output, session) {
     req(tbl_results())
     message("Rendering results plot\n")
     build_boxplot(
-      dplyr::inner_join(tbl_results(), tbl_samples, by = "sample")
+      dplyr::inner_join(tbl_results(), tbl_samples, by = "sample"),
+      title = sprintf(
+        "Gene expression for %s (%s)",
+        tbl_results()$gene_name[1],
+        selected_gene_id()
+      )
     )
   })
 

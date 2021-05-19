@@ -1,7 +1,7 @@
 Package: gtexplorer
 Title: GTEx Explorer
 Description: A shiny-based frontend for TileDB-backed GTEx data.
-Version: 0.1.0
+Version: 0.2.0
 Authors@R:
     person(given = "Aaron",
            family = "Wolen",
@@ -14,20 +14,18 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports:
+    DT,
     shiny (>= 1.6.0),
     tiledb,
-    dplyr,
-    purrr,
     utils,
     pkgload,
-    DT,
     shinycssloaders,
     bslib,
     shinyjs,
-    magrittr,
     shinydashboard,
     scales,
-    plotly
+    plotly,
+    dplyr
 Remotes:
   stephenturner/annotables
 Depends:
