@@ -3,14 +3,14 @@
 #' @examples
 #' \dontrun{
 #' tdb_genes <- open_gtex_array()
-#' tbl_results <- tbd_genes["ENSG00000202059.1",]
+#' tbl_results <- tdb_genes["ENSG00000202059.1",]
 #' tbl_results <- merge(tbl_results, tbl_samples, by = "sample")
 #' build_boxplot(tbl_results)
 #' }
 #' @importFrom plotly plot_ly layout
 #' @importFrom scales dscale hue_pal
 
-build_boxplot <- function(data) {
+build_boxplot <- function(data, title = "Gene Expression") {
   tissues <- sort(unique(data$SMTS))
   tissue_colors  <- scales::dscale(
     tissues,
@@ -27,6 +27,7 @@ build_boxplot <- function(data) {
     boxpoints = "outliers",
     hoveron = "boxes",
     jitter = 0.75,
+    title = title,
     marker = list(
       # color = "gray",
       size = 4,
@@ -44,6 +45,10 @@ build_boxplot <- function(data) {
     ),
     yaxis = list(
       rangemode = "tozero"
+    ),
+    font = list(
+      family = "helvetica",
+      size = 12
     )
   )
 }
