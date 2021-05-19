@@ -24,7 +24,19 @@ app_ui_navbar <- function(request) {
         ),
 
         queryParamsUI("params"),
-        app_ui_results(),
+
+        tabsetPanel(
+          id = "main-tabs",
+          type = "tabs",
+          tabPanel(
+            "About",
+            shiny::includeMarkdown(system.file("assets/about.md", package = "gtexplorer")),
+            class = "p-3"
+          ),
+          tabPanel("Results", app_ui_results(), class = "p-3"),
+          tabPanel("Snippets", app_ui_snippets(), class = "p-3")
+        ),
+
       ) # div.container
 
     ) # tabPanel
