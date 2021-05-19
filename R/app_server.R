@@ -58,6 +58,14 @@ app_server <- function(input, output, session) {
     tdb_genes[selected_gene_id(),]
   })
 
+  shiny::observeEvent(selected_genes(), {
+    req(input$`main-tabs` != "Results")
+    message("Switching to results tab")
+    shiny::updateTabsetPanel(session, "main-tabs",
+      selected = "Results"
+    )
+  })
+
   # output$download_results <- shiny::downloadHandler(
   #   filename = "tiledb-quokka-export.csv",
   #   content = function(file) {

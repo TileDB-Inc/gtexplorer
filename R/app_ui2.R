@@ -26,6 +26,7 @@ app_ui_navbar <- function(request) {
         queryParamsUI("params"),
 
         tabsetPanel(
+          id = "main-tabs",
           type = "tabs",
           tabPanel(
             "About",
