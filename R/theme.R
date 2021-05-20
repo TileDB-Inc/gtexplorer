@@ -5,6 +5,8 @@ gtexplorer_theme <- function() {
       primary = "#3190ff",
       base_font = bslib::font_google("Inter")
     ),
-    rules = ".navbar{display: none;}"
+    rules = sass::sass_file(
+      system.file("assets/custom.scss", package = "gtexplorer")
+    )
   )
 }

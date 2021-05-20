@@ -21,6 +21,7 @@ Imports:
     pkgload,
     shinycssloaders,
     bslib,
+    sass,
     shinyjs,
     shinydashboard,
     scales,
