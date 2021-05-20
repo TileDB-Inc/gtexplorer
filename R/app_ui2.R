@@ -17,9 +17,9 @@ app_ui_navbar <- function(request) {
         div(
           style = "width: 100%; position: relative;z-index:-9;",
           div(
-            # style = "padding-top:20px;",
-            h1("TileDB", class = "font-weight-bold"),
-            h3("GTEx Explorer", class = "font-weight-light", style = "margin-top: 0em;")
+            class = "pt-3",
+            img(src = "/www/images/logo.svg"),
+            h3("GTEx Explorer", class = "font-weight-light mt-1")
           )
         ),
 

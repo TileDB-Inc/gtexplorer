@@ -1,12 +1,12 @@
 Package: gtexplorer
 Title: GTEx Explorer
 Description: A shiny-based frontend for TileDB-backed GTEx data.
-Version: 0.2.0.9002
+Version: 0.2.0.9003
 Authors@R:
     person(given = "Aaron",
            family = "Wolen",
            role = c("aut", "cre"),
-           email = "aaron@wolen.com",
+           email = "aaron@tiledb.com",
            comment = c(ORCID = "0000-0003-2542-2202"))
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -21,13 +21,12 @@ Imports:
     pkgload,
     shinycssloaders,
     bslib,
+    sass,
     shinyjs,
     shinydashboard,
     scales,
     plotly,
     dplyr,
     markdown
-Remotes:
-  stephenturner/annotables
 Depends:
     R (>= 2.10)

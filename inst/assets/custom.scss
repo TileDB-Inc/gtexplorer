@@ -1,0 +1,11 @@
+.navbar {
+  display: none;
+}
+
+// override datatable's hard coded row selection color
+// https://github.com/rstudio/DT/blob/f0d511da3d32683342e9876c2b7da9ff1cd2f112/inst/htmlwidgets/lib/datatables/css/dataTables.bootstrap4.extra.css#L72-L75
+#table_genes {
+  tbody tr.active td {
+    background-color: $primary;
+  }
+}

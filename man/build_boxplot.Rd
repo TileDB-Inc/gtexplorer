@@ -4,7 +4,7 @@
 \alias{build_boxplot}
 \title{Build GTEx boxplot}
 \usage{
-build_boxplot(data)
+build_boxplot(data, title = "Gene Expression")
 }
 \arguments{
 \item{data}{data.frame containing columns: SMTS, SMTSD, and tpm}
@@ -15,7 +15,7 @@ Build GTEx boxplot
 \examples{
 \dontrun{
 tdb_genes <- open_gtex_array()
-tbl_results <- tbd_genes["ENSG00000202059.1",]
+tbl_results <- tdb_genes["ENSG00000202059.1",]
 tbl_results <- merge(tbl_results, tbl_samples, by = "sample")
 build_boxplot(tbl_results)
 }
