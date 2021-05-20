@@ -18,7 +18,7 @@ app_ui_navbar <- function(request) {
           style = "width: 100%; position: relative;z-index:-9;",
           div(
             class = "pt-3",
-            img(src = "/www/images/logo.svg"),
+            img(src = "www/images/logo.svg"),
             h3("GTEx Explorer", class = "font-weight-light mt-1")
           )
         ),
