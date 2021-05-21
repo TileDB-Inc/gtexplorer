@@ -1,7 +1,7 @@
 Package: gtexplorer
 Title: GTEx Explorer
 Description: A shiny-based frontend for TileDB-backed GTEx data.
-Version: 0.2.0.9004
+Version: 0.2.1
 Authors@R:
     person(given = "Aaron",
            family = "Wolen",
