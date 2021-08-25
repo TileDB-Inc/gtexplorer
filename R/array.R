@@ -8,7 +8,7 @@
 #' @export
 
 open_gtex_array <- function(
-  uri = "s3://genomic-datasets/biological-databases/data/tables/gtex-analysis-rnaseqc-gene-tpm",
+  uri = "tiledb://TileDB-Inc/gtex-analysis-rnaseqc-gene-tpm",
   attrs = "tpm",
   verbose = FALSE) {
   if (verbose) {

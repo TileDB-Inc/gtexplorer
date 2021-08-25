@@ -31,7 +31,7 @@ build_r_snippet <- function(gene_id) {
 library(tiledb)
 
 gwas_array <- tiledb_array(
-  uri = \"s3://genomic-datasets/biological-databases/data/tables/gtex-analysis-rnaseqc-gene-tpm\",
+  uri = \"tiledb://TileDB-Inc/gtex-analysis-rnaseqc-gene-tpm\",
   is.sparse = TRUE,
   attrs = \"tpm\",
   as.data.frame = TRUE
@@ -44,7 +44,7 @@ build_py_snippet <- function(gene_id) {
   sprintf("
 import tiledb
 
-uri = \"s3://genomic-datasets/biological-databases/data/tables/gtex-analysis-rnaseqc-gene-tpm\"
+uri = \"tiledb://TileDB-Inc/gtex-analysis-rnaseqc-gene-tpm\"
 
 gtex_array = tiledb.open(uri)
 
