@@ -30,7 +30,7 @@ build_r_snippet <- function(gene_id) {
   sprintf("
 library(tiledb)
 
-gtex_array <- tiledb_array(
+gwas_array <- tiledb_array(
   uri = \"s3://genomic-datasets/biological-databases/data/tables/gtex-analysis-rnaseqc-gene-tpm\",
   is.sparse = TRUE,
   attrs = \"tpm\",
