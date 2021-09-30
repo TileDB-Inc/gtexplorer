@@ -11,6 +11,7 @@
 #' @importFrom scales dscale hue_pal
 
 build_boxplot <- function(data, title = "Gene Expression") {
+
   tissues <- sort(unique(data$SMTS))
   tissue_colors  <- scales::dscale(
     tissues,
@@ -27,7 +28,6 @@ build_boxplot <- function(data, title = "Gene Expression") {
     boxpoints = "outliers",
     hoveron = "boxes",
     jitter = 0.75,
-    title = title,
     marker = list(
       # color = "gray",
       size = 4,
@@ -39,6 +39,7 @@ build_boxplot <- function(data, title = "Gene Expression") {
     p = bp,
     showlegend = FALSE,
     margin = list(b = 200),
+    title = title,
     xaxis = list(
       title = "",
       tickangle = 45
