@@ -1,5 +1,8 @@
 #' Server-side logic
 #'
+#' You can override the default array URI with the environment variable,
+#' `GTEXPLORER_URI`.
+#'
 #' @param input,output,session Internal parameters for {shiny}
 #' @importFrom DT datatable renderDT JS
 #' @import shiny
@@ -8,7 +11,12 @@
 
 app_server <- function(input, output, session) {
 
-  tdb_genes <- open_gtex_array()
+  array_uri <- Sys.getenv(
+    x = "GTEXPLORER_URI",
+    unset = "tiledb://TileDB-Inc/gtex-analysis-rnaseqc-gene-tpm"
+  )
+
+  tdb_genes <- open_gtex_array(array_uri, attrs = "tpm")
   selected_genes <- queryParamsServer("params")
 
 
@@ -44,12 +52,12 @@ app_server <- function(input, output, session) {
 
   output$r_snippet <- shiny::renderText({
     message("Updating R snippet")
-    build_r_snippet(selected_gene_id())
+    build_r_snippet(array_uri, selected_gene_id())
   })
 
   output$py_snippet <- shiny::renderText({
     message("Updating Python snippet")
-    build_py_snippet(selected_gene_id())
+    build_py_snippet(array_uri, selected_gene_id())
   })
 
   tbl_results <- shiny::reactive({

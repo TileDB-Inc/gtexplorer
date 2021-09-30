@@ -26,32 +26,30 @@ app_ui_snippets <- function() {
   )
 }
 
-build_r_snippet <- function(gene_id) {
+build_r_snippet <- function(uri, gene_id) {
   sprintf("
 library(tiledb)
 
-gwas_array <- tiledb_array(
-  uri = \"tiledb://TileDB-Inc/gtex-analysis-rnaseqc-gene-tpm\",
+gtex_array <- tiledb_array(
+  uri = \"%s\",
   is.sparse = TRUE,
   attrs = \"tpm\",
-  as.data.frame = TRUE
+  return_as = \"tibble\"
 )
 
-tbl_tpms <- gtex_array[\"%s\", ]", gene_id)
+tbl_tpms <- gtex_array[\"%s\", ]", uri, gene_id)
 }
 
-build_py_snippet <- function(gene_id) {
+build_py_snippet <- function(uri, gene_id) {
   sprintf("
 import tiledb
 
-uri = \"tiledb://TileDB-Inc/gtex-analysis-rnaseqc-gene-tpm\"
-
-gtex_array = tiledb.open(uri)
+gtex_array = tiledb.open(\"%s\")
 
 df_tpms = (gtex_array
   .query(
     attrs = [\"tpm\"],
     dims = [\"sample\", \"gene_id\"])
   .df[\"%s\",:]
-)", gene_id)
+)", uri, gene_id)
 }

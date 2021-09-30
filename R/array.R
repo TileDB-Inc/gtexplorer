@@ -8,8 +8,8 @@
 #' @export
 
 open_gtex_array <- function(
-  uri = "tiledb://TileDB-Inc/gtex-analysis-rnaseqc-gene-tpm",
-  attrs = "tpm",
+  uri,
+  attrs,
   verbose = FALSE) {
   if (verbose) {
     message(sprintf("Opening array from: '%s'", uri))
