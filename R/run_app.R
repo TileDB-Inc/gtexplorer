@@ -1,4 +1,4 @@
-#' Quokka3
+#' Run the Shiny GTEx Explorer App
 #'
 #' Run the Quokka3 application in your browser.
 #'
