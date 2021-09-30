@@ -19,6 +19,6 @@ open_gtex_array <- function(
     uri,
     is.sparse = TRUE,
     attrs = attrs,
-    as.data.frame = TRUE
+    return_as = "tibble"
   )
 }
