@@ -84,11 +84,12 @@ app_server <- function(input, output, session) {
   output$plot_results <- plotly::renderPlotly({
     req(tbl_results())
     message("Rendering results plot\n")
+
     build_boxplot(
       dplyr::inner_join(tbl_results(), tbl_samples, by = "sample"),
       title = sprintf(
         "Gene expression for %s (%s)",
-        tbl_results()$gene_name[1],
+        selected_genes()$gene_name[1],
         selected_gene_id()
       )
     )
